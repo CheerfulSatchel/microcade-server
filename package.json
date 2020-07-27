@@ -16,7 +16,8 @@
     "build-ui": "parcel build src/client/index.html --out-dir out/client",
     "watch-ui": "parcel src/client/index.html --out-dir out/client",
     "dev": "nodemon -L out/index.js --ignore 'src/client'",
-    "test": "jest"
+    "test": "jest",
+    "test:watch": "jest -w"
   },
   "devDependencies": {
     "@testing-library/dom": "^7.21.5",
