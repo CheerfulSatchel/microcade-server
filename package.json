@@ -6,9 +6,9 @@
   },
   "scripts": {
     "tsc": "tsc -p tsconfig.json",
-    "start": "node out/HelloWorld.js",
+    "start": "node out/index.js",
     "build:watch": "tsc -p tsconfig.json -w",
-    "dev": "nodemon -L out/HelloWorld.js"
+    "dev": "nodemon -L out/index.js"
   },
   "devDependencies": {
     "@types/express": "^4.17.7",
