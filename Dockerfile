@@ -8,6 +8,7 @@ RUN yarn install
 
 # TypeScript
 RUN yarn run tsc
+RUN yarn run build-ui
 
 EXPOSE 3001
 
