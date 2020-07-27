@@ -1,6 +1,7 @@
 {
   "name": "microcade-server",
   "dependencies": {
+    "adjective-adjective-animal": "^1.3.3",
     "express": "^4.17.1",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
@@ -10,7 +11,7 @@
   },
   "scripts": {
     "tsc": "tsc -p tsconfig.json",
-    "start": "node out/index.js",
+    "start": "node out/server/index.js",
     "build:watch": "tsc -p tsconfig.json -w",
     "build-ui": "parcel build src/client/index.html --out-dir out/client",
     "watch-ui": "parcel src/client/index.html --out-dir out/client",
@@ -22,6 +23,7 @@
     "@types/react-dom": "^16.9.8",
     "@types/socket.io": "^2.1.10",
     "@types/socket.io-client": "^1.4.33",
+    "@types/ip": "^1.1.5",
     "nodemon": "^2.0.4",
     "parcel-bundler": "^1.12.4"
   }
