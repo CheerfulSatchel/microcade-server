@@ -1,9 +1,11 @@
 import * as React from "react";
 import styled from "styled-components";
 
+export type Board = (number | string)[][];
+
 declare namespace TetrisBoard {
   interface TetrisBoardProps {
-    field: (number | string)[][];
+    board: Board;
   }
 }
 
@@ -22,11 +24,11 @@ const Cell = styled.div<{ backgroundColor?: string }>`
 `;
 
 const TetrisBoard: React.FC<TetrisBoard.TetrisBoardProps> = () => {
-  const field = buildFieldMatrix(WIDTH, HEIGHT);
+  const board = buildBoardMatrix(WIDTH, HEIGHT);
 
   return (
     <div>
-      {field.map((row) => (
+      {board.map((row) => (
         <Row>
           {row.map(() => (
             <Cell backgroundColor="grey" />
@@ -37,17 +39,17 @@ const TetrisBoard: React.FC<TetrisBoard.TetrisBoardProps> = () => {
   );
 };
 
-export function buildFieldMatrix(width: number, height: number) {
-  const field = [];
+export function buildBoardMatrix(width: number, height: number) {
+  const board = [];
   for (let i = 0; i < height; i++) {
     const row = [];
     for (let j = 0; j < width; j++) {
       row.push(0);
     }
-    field.push(row);
+    board.push(row);
   }
 
-  return field;
+  return board;
 }
 
 export default TetrisBoard;
