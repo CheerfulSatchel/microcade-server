@@ -1,11 +1,10 @@
-// Loosely based on FreeCodeCamp course https://github.com/weibenfalk/react-tetris-starter-files/tree/master/Stepped%20Solutions/react-tetris%20-%20FINISHED/src
-
 export interface Block {
   shape: any[][];
   color: string;
 }
 
-export const BLOCKS: { [key: string]: Block } = {
+export const BLOCKS = {
+  0: { shape: [[0]], color: "0, 0, 0" },
   I: {
     shape: [
       [0, "I", 0, 0],
@@ -13,7 +12,7 @@ export const BLOCKS: { [key: string]: Block } = {
       [0, "I", 0, 0],
       [0, "I", 0, 0],
     ],
-    color: "#A1A1A1",
+    color: "80, 227, 230",
   },
   J: {
     shape: [
@@ -21,7 +20,7 @@ export const BLOCKS: { [key: string]: Block } = {
       [0, "J", 0],
       ["J", "J", 0],
     ],
-    color: "#F1F1F1",
+    color: "36, 95, 223",
   },
   L: {
     shape: [
@@ -29,60 +28,43 @@ export const BLOCKS: { [key: string]: Block } = {
       [0, "L", 0],
       [0, "L", "L"],
     ],
-    color: "#B1B1B1",
+    color: "223, 173, 36",
   },
   O: {
     shape: [
       ["O", "O"],
       ["O", "O"],
     ],
-    color: "#000000",
+    color: "223, 217, 36",
   },
   S: {
     shape: [
-      ["S", 0, 0],
+      [0, "S", "S"],
       ["S", "S", 0],
-      [0, "S", 0],
+      [0, 0, 0],
     ],
-    color: "#555555",
-  },
-  Z: {
-    shape: [
-      [0, 0, "Z"],
-      [0, "Z", "Z"],
-      [0, "Z", 0],
-    ],
-    color: "#D1D1D1",
+    color: "48, 211, 56",
   },
   T: {
     shape: [
+      [0, 0, 0],
       ["T", "T", "T"],
       [0, "T", 0],
+    ],
+    color: "132, 61, 198",
+  },
+  Z: {
+    shape: [
+      ["Z", "Z", 0],
+      [0, "Z", "Z"],
       [0, 0, 0],
     ],
-    color: "#E3E3E3",
+    color: "227, 78, 78",
   },
 };
 
-export const rotateTetromino: (block: Block) => Block = (block) => {
-  const oldShape = block.shape;
-  const newShape: any[][] = [];
-
-  oldShape.forEach((oldShapeRow, i) => {
-    oldShapeRow.forEach((char, j) => {
-      let rowReversed = [...oldShapeRow];
-      rowReversed.reverse();
-
-      if (!newShape[j]) {
-        newShape[j] = [];
-      }
-
-      newShape[j][i] = rowReversed[j];
-    });
-  });
-
-  return {
-    ...block,
-    shape: newShape,
-  };
+export const randomTetromino = () => {
+  const tetrominos = "IJLOSTZ";
+  const randTetromino = tetrominos[Math.floor(Math.random() * tetrominos.length)];
+  return BLOCKS[randTetromino];
 };

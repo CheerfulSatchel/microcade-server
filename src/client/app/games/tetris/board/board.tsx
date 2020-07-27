@@ -1,55 +1,22 @@
-import * as React from "react";
+import React from "react";
 import styled from "styled-components";
 
-export type Board = (number | string)[][];
+import Cell from "./Cell";
 
-declare namespace TetrisBoard {
-  interface TetrisBoardProps {
-    board: Board;
-  }
-}
-
-const WIDTH = 10;
-const HEIGHT = 20;
-
-const Row = styled.div`
-  display: flex;
+export const StyledStage = styled.div<{ width?: number; height?: number }>`
+  display: grid;
+  grid-template-rows: repeat(${(props) => props.height}, 28px);
+  grid-template-columns: repeat(${(props) => props.width}, 28px);
+  grid-gap: 1px;
+  border: 2px solid #333;
+  max-width: 25vw;
+  background: #111;
 `;
 
-const Cell = styled.div<{ backgroundColor?: string }>`
-  background-color: ${(props) => props.backgroundColor ?? "none"};
-  border: 1px solid #2d2d2d;
-  width: 28px;
-  height: 28px;
-`;
+const Stage = ({ stage }) => (
+  <StyledStage width={stage[0].length} height={stage.length}>
+    {stage.map((row) => row.map((cell, x) => <Cell key={x} type={cell[0]} />))}
+  </StyledStage>
+);
 
-const TetrisBoard: React.FC<TetrisBoard.TetrisBoardProps> = () => {
-  const board = buildBoardMatrix(WIDTH, HEIGHT);
-
-  return (
-    <div>
-      {board.map((row) => (
-        <Row>
-          {row.map(() => (
-            <Cell backgroundColor="grey" />
-          ))}
-        </Row>
-      ))}
-    </div>
-  );
-};
-
-export function buildBoardMatrix(width: number, height: number) {
-  const board = [];
-  for (let i = 0; i < height; i++) {
-    const row = [];
-    for (let j = 0; j < width; j++) {
-      row.push(0);
-    }
-    board.push(row);
-  }
-
-  return board;
-}
-
-export default TetrisBoard;
+export default Stage;
