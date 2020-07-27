@@ -1,4 +1,4 @@
-// Based on FreeCodeCamp course https://github.com/weibenfalk/react-tetris-starter-files/tree/master/Stepped%20Solutions/react-tetris%20-%20FINISHED/src
+// Pulled from FreeCodeCamp course https://github.com/weibenfalk/react-tetris-starter-files/tree/master/Stepped%20Solutions/react-tetris%20-%20FINISHED/src
 
 import React, { useState } from "react";
 import styled from "styled-components";
@@ -45,7 +45,7 @@ const Tetris = () => {
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
   const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(rowsCleared);
 
-  const movePlayer = (dir) => {
+  const movePlayer = (dir: number) => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
       updatePlayerPos({ x: dir, y: 0 });
     }
@@ -72,19 +72,11 @@ const Tetris = () => {
   };
 
   const drop = () => {
-    // Increase level when player has cleared 10 rows
-    if (rows > (level + 1) * 10) {
-      setLevel((prev) => prev + 1);
-      // Also increase speed
-      setDropTime(1000 / (level + 1) + 200);
-    }
-
     if (!checkCollision(player, stage, { x: 0, y: 1 })) {
       updatePlayerPos({ x: 0, y: 1, collided: false });
     } else {
       // Game over!
       if (player.pos.y < 1) {
-        console.log("GAME OVER!!!");
         setGameOver(true);
         setDropTime(null);
       }
@@ -105,6 +97,7 @@ const Tetris = () => {
     drop();
   }, dropTime);
 
+  // TODO: Spacebar to drop
   const move = ({ keyCode }) => {
     if (!gameOver) {
       if (keyCode === 37) {
