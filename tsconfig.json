@@ -8,7 +8,8 @@
     "sourceMap": true,
     "outDir": "out/",
     "baseUrl": ".",
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["jest"]
   },
   "lib": ["es2015"],
   "include": ["./src"],
