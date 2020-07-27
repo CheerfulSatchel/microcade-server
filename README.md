@@ -1,2 +1,13 @@
 # microcade-server
+
 Why collaborate when you can procrastinate?
+
+# Developing Locally!
+
+Nodemon doesn't seem to work with docker-compose
+
+The best way I can see to dev is 3-fold
+
+1. In one window, run `yarn build:watch`. This will watch-compile the SERVER TS files.
+2. In another window, run `yarn dev`. This will reload the server when SERVER TS files change.
+3. In a third window, run `yarn watch-ui`. This will watch-compile the CLIENT TS files.

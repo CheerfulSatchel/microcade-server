@@ -1,11 +1,15 @@
 {
- "compilerOptions": {
+  "compilerOptions": {
     "module": "commonjs",
+    "jsx": "react",
     "esModuleInterop": true,
     "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "out/"
+    "outDir": "out/",
+    "baseUrl": "."
   },
-  "lib": ["es2015"]
+  "lib": ["es2015"],
+  "include": ["./src"],
+  "exclude": ["./src/client"]
 }
