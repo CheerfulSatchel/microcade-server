@@ -17,8 +17,6 @@ import Display from "./display";
 import StartButton from "./startButton";
 
 export const StyledTetrisWrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
   background-size: cover;
   overflow: hidden;
 `;
