@@ -6,7 +6,7 @@
     "target": "es6",
     "moduleResolution": "node",
     "sourceMap": true,
-    "outDir": "out/server",
+    "outDir": "out",
     "baseUrl": ".",
     "skipLibCheck": true,
     "types": ["jest"]
