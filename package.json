@@ -6,6 +6,7 @@
     "react-dom": "^16.13.1",
     "socket.io": "^2.3.0",
     "socket.io-client": "^2.3.0",
+    "styled-components": "^5.1.1",
     "typescript": "^3.9.7"
   },
   "scripts": {
@@ -22,7 +23,9 @@
     "@types/react-dom": "^16.9.8",
     "@types/socket.io": "^2.1.10",
     "@types/socket.io-client": "^1.4.33",
+    "@types/styled-components": "^5.1.1",
     "nodemon": "^2.0.4",
-    "parcel-bundler": "^1.12.4"
+    "parcel-bundler": "^1.12.4",
+    "sass": "^1.26.10"
   }
 }
