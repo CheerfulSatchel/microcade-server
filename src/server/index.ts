@@ -14,7 +14,10 @@ const port: number = 3001;
 
 app.use(express.static(path.join(__dirname, "../client")));
 
-console.log(path.join(__dirname, "../client"));
+app.use((req, res, next) => {
+  console.log(`Received ${req.method} request to ${req.url}`);
+  next();
+});
 
 app.get("/api", (req, res) => {
   res.send("Ur mum");

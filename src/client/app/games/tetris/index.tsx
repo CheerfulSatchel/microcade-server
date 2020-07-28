@@ -11,7 +11,6 @@ declare namespace TetrisHome {
 }
 
 const TetrisHome: React.FC<TetrisHome.Props> = ({ userName }) => {
-  console.log("Home");
   return (
     <BrowserRouter basename="tetris">
       <Route exact path="/" component={() => <MainPage userName={userName} />} />
