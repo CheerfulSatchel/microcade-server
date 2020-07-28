@@ -8,22 +8,24 @@ import ip from "ip";
 import { RoomManager, Room } from "./services/RoomManager";
 
 const app = express();
-const server: http.Server = http.createServer(app);
-const io: socket.Server = socket(server);
 const roomManager: RoomManager = new RoomManager();
 
 const port: number = 3001;
 
-app.use(express.static(path.join(__dirname, "../out/client")));
+app.use(express.static(path.join(__dirname, "../client")));
 
-console.log(path.join(__dirname, "../out/client"));
+app.use((req, res, next) => {
+  console.log(`Received ${req.method} request to ${req.url}`);
+  next();
+});
 
 app.get("/api", (req, res) => {
-  res.send("Ur mufm");
+  res.send("Ur mum");
 });
 
 // creates a room
 app.post("/api/createRoom", (req, res) => {
+  console.log("POST");
   roomManager.createNewRoom().then((roomId: string) => {
     res.send({ roomId, websocketURL: getWebsocketURL(roomId) });
   });
@@ -45,6 +47,13 @@ app.get("/api/rooms/list", (req, res) => {
 app.get("/api/room/:roomId", (req, res) => {
   res.send({ room: req.params.roomId });
 });
+
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/index.html"));
+});
+
+const server: http.Server = http.createServer(app);
+const io: socket.Server = socket(server);
 
 io.on("connection", (socket: socket.Socket) => {
   console.log("AYYY MACARENA");
