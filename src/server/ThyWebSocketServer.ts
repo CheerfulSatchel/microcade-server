@@ -10,7 +10,7 @@ server.on("request", ThyExpressServer);
 
 const webSocketServer = socket(server);
 webSocketServer.on(Events.CONNECTION, (socket: socket.Socket) => {
-  socket.on(Events.CONNECTTOROOM, (roomName) => {
+  socket.on(Events.CONNECT_TO_ROOM, (roomName) => {
     roomManager.addSocketToRoom(roomName, socket);
   });
 

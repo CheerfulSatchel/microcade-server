@@ -67,7 +67,7 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
     const socket = io.connect();
 
     socket.on(Events.CONNECT, function () {
-      socket.emit(Events.CONNECTTOROOM, roomName);
+      socket.emit(Events.CONNECT_TO_ROOM, roomName);
     });
   };
 

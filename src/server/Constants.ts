@@ -1,6 +1,6 @@
 export const Events = {
   CONNECT: "connect",
   CONNECTION: "connection",
-  CONNECTTOROOM: "connectToRoom",
+  CONNECT_TO_ROOM: "connectToRoom",
   MESSAGE: "message",
 };
