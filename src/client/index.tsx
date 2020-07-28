@@ -7,8 +7,9 @@ import Tetris from "./app/games/tetris";
 function App() {
   return (
     <Router>
+      <Route exact path="/" component={Home} />
       <Route exact path="/home" component={Home} />
-      <Route exact path="/tetris" component={Tetris} />
+      <Route path="/tetris" component={Tetris} />
     </Router>
   );
 }
