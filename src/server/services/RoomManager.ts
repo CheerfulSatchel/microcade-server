@@ -1,10 +1,13 @@
+import socket from "socket.io";
+import io from "socket.io";
 import generate from "adjective-adjective-animal";
 
 export interface Room {
   created: Date;
   name: string;
   users: string[];
-  chatHistory: [];
+  chatHistory: string[];
+  sockets: socket.Socket[];
 }
 
 export class RoomManager {
@@ -16,9 +19,17 @@ export class RoomManager {
       name: roomId,
       users: [],
       chatHistory: [],
+      sockets: [],
     };
 
     this.rooms[roomId] = newRoom;
+  }
+
+  public addSocketToRoom(roomId: string, newSocket: socket.Socket) {
+    if (this.rooms[roomId]) {
+      this.rooms[roomId].sockets.push(newSocket);
+      newSocket.join(roomId);
+    }
   }
 
   public async createNewRoom(): Promise<string> {
