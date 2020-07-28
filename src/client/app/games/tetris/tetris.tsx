@@ -45,6 +45,7 @@ const Tetris = ({ match }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
+  const [gameOverText, setGameOverText] = useState("You lost!");
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
@@ -70,11 +71,13 @@ const Tetris = ({ match }) => {
           });
 
           socket.on(Events.WINNER, () => {
+            setGameOverText("You won!");
             setGameOver(true);
             setDropTime(null);
           });
 
           socket.on(Events.LOSER, () => {
+            setGameOverText("You lost!");
             setGameOver(true);
             setDropTime(null);
           });
@@ -173,12 +176,12 @@ const Tetris = ({ match }) => {
   };
 
   return (
-    <StyledTetrisWrapper role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
+    <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
       <StyledTetris>
         <Board stage={stage} />
         <aside>
           {gameOver ? (
-            <Display gameOver={gameOver} text="Game Over" />
+            <Display gameOver={gameOver} text={gameOverText} />
           ) : (
             <div>
               <Display text={`Score: ${score}`} />
