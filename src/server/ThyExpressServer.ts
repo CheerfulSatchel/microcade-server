@@ -57,6 +57,17 @@ ThyExpressServer.get("/api/room/:roomId", (req, res) => {
   }
 });
 
+// start game for room
+ThyExpressServer.post("/api/room/start/:roomId", (req, res) => {
+  const successful = roomManager.startGameForRoom(req.params.roomId);
+
+  if (successful) {
+    res.sendStatus(200);
+  } else {
+    res.send("No room by that name").status(400);
+  }
+});
+
 ThyExpressServer.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/index.html"));
 });

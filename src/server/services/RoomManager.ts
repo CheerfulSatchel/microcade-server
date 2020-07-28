@@ -8,6 +8,8 @@ export interface Room {
   users: string[];
   chatHistory: string[];
   sockets: socket.Socket[];
+  activeGamePlayers: socket.Socket[];
+  gameInProgress: boolean;
 }
 
 export interface RoomDTO {
@@ -26,6 +28,8 @@ export class RoomManager {
       users: [],
       chatHistory: [],
       sockets: [],
+      activeGamePlayers: [],
+      gameInProgress: false,
     };
 
     this.rooms[roomId] = newRoom;
@@ -85,5 +89,19 @@ export class RoomManager {
     if (this.rooms[roomId].users.length === 0) {
       delete this.rooms[roomId];
     }
+  }
+
+  public startGameForRoom(roomId: string) {
+    if (!this.rooms[roomId]) {
+      return false;
+    }
+
+    const room = this.rooms[roomId];
+
+    room.gameInProgress = true;
+    room.sockets.forEach((socket) => socket.emit(Events.START_GAME));
+    room.activeGamePlayers = [...room.sockets];
+
+    return true;
   }
 }

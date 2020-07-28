@@ -20,6 +20,7 @@ import StartButton from "./startButton";
 import "./tetris.scss";
 import { Room } from "../../../..//server/services/RoomManager";
 import { Events } from "../../../../server/Constants";
+import * as TetrisEvents from "../../../../server/events/tetris";
 
 export const StyledTetrisWrapper = styled.div`
   background-size: cover;
@@ -62,6 +63,9 @@ const Tetris = ({ match }) => {
           });
 
           socket.on(Events.MESSAGE, (message) => console.log(message));
+          socket.on(Events.START_GAME, () => {
+            startGame();
+          });
         })
         .catch((e) => console.warn(e));
     }
@@ -80,6 +84,11 @@ const Tetris = ({ match }) => {
         setDropTime(1000 / (level + 1));
       }
     }
+  };
+
+  const requestGameStart = () => {
+    fetch(`/api/room/start/${match.params.roomName}`, { method: "POST" });
+    // TODO: Error handling
   };
 
   const startGame = () => {
@@ -101,6 +110,7 @@ const Tetris = ({ match }) => {
       if (player.pos.y < 1) {
         setGameOver(true);
         setDropTime(null);
+        socket.emit(TetrisEvents.FINISH_GAME);
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
     }
@@ -148,7 +158,7 @@ const Tetris = ({ match }) => {
               <Display text={`Level: ${level}`} />
             </div>
           )}
-          <StartButton callback={startGame} />
+          <StartButton callback={requestGameStart} disabled={gameOver} />
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
