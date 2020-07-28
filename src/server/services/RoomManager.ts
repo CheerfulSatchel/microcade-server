@@ -39,7 +39,7 @@ export class RoomManager {
 
   public removePlayerFromRoom(roomId: string, playerIdToRemove: string) {
     if (this.getRoom(roomId)) {
-      if (this.getRoom(roomId).users.indexOf(playerIdToRemove) > -1) {
+      if (this.getRoom(roomId).users.includes(playerIdToRemove)) {
         delete this.getRoom(roomId).users[playerIdToRemove];
       }
     }
@@ -56,7 +56,7 @@ export class RoomManager {
   }
 
   public addUserToRoom(roomId: string, userId: string) {
-    if (!(this.rooms[roomId].users.indexOf(userId) > -1)) {
+    if (!this.rooms[roomId].users.includes(userId)) {
       this.rooms[roomId].users.push(userId);
     }
   }
