@@ -91,6 +91,30 @@ export class RoomManager {
     }
   }
 
+  public markPlayerFinished(roomId: string, socketId: string) {
+    const room = this.rooms[roomId];
+
+    if (!room) {
+      return false;
+    }
+
+    const matchingSocketIndex = room.activeGamePlayers.findIndex((activePlayer) => activePlayer.id === socketId);
+
+    if (matchingSocketIndex < 0) {
+      return false;
+    }
+
+    const [removedSocket] = room.activeGamePlayers.splice(matchingSocketIndex, 1);
+    removedSocket.emit(Events.LOSER);
+
+    if (room.activeGamePlayers.length === 1) {
+      const lastSocket = room.activeGamePlayers.pop();
+      lastSocket.emit(Events.WINNER);
+    }
+
+    return true;
+  }
+
   public startGameForRoom(roomId: string) {
     if (!this.rooms[roomId]) {
       return false;

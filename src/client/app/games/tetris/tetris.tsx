@@ -56,6 +56,7 @@ const Tetris = ({ match }) => {
         .then((res) => res.json())
         .then((room: Room) => {
           const socket = io.connect();
+          setSocket(socket);
 
           socket.on(Events.CONNECT, function () {
             Events;
@@ -63,8 +64,19 @@ const Tetris = ({ match }) => {
           });
 
           socket.on(Events.MESSAGE, (message) => console.log(message));
+
           socket.on(Events.START_GAME, () => {
             startGame();
+          });
+
+          socket.on(Events.WINNER, () => {
+            setGameOver(true);
+            setDropTime(null);
+          });
+
+          socket.on(Events.LOSER, () => {
+            setGameOver(true);
+            setDropTime(null);
           });
         })
         .catch((e) => console.warn(e));
@@ -91,6 +103,21 @@ const Tetris = ({ match }) => {
     // TODO: Error handling
   };
 
+  const requestGameFinish = () => {
+    fetch(`/api/room/finish/${match.params.roomName}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ socketId: socket.id }),
+    })
+      .then(() => {})
+      .catch((e) => {
+        setGameOver(true);
+        setDropTime(null);
+      });
+  };
+
   const startGame = () => {
     // Reset everything
     setStage(createStage());
@@ -108,9 +135,10 @@ const Tetris = ({ match }) => {
     } else {
       // Game over!
       if (player.pos.y < 1) {
-        setGameOver(true);
-        setDropTime(null);
-        socket.emit(TetrisEvents.FINISH_GAME);
+        // setGameOver(true);
+        // setDropTime(null);
+        // socket.emit(TetrisEvents.FINISH_GAME);
+        requestGameFinish();
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
     }
