@@ -22,6 +22,7 @@ app.get("/api", (req, res) => {
 
 // creates a room
 app.post("/api/createRoom", (req, res) => {
+  console.log("POST");
   roomManager.createNewRoom().then((roomId: string) => {
     res.send({ roomId, websocketURL: getWebsocketURL(roomId) });
   });
