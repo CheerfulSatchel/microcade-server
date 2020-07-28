@@ -12,6 +12,11 @@ const webSocketServer = socket(server);
 webSocketServer.on(Events.CONNECTION, (socket: socket.Socket) => {
   socket.on(Events.CONNECT_TO_ROOM, (roomName) => {
     roomManager.addSocketToRoom(roomName, socket);
+
+    socket.on("disconnect", () => {
+      roomManager.removeSocketFromRoom(roomName, socket.id);
+      socket.leave(roomName);
+    });
   });
 
   socket.on(Events.MESSAGE, (message) => {

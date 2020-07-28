@@ -37,11 +37,40 @@ export class RoomManager {
     return newRoom;
   }
 
+  private roomToDTO(room: Room): RoomDTO {
+    return {
+      name: room.name,
+      created: room.created,
+      users: room.users,
+      chatHistory: room.chatHistory,
+    };
+  }
+
   public addSocketToRoom(roomId: string, newSocket: socket.Socket) {
     if (this.rooms[roomId]) {
       this.rooms[roomId].sockets.push(newSocket);
       newSocket.join(roomId);
       newSocket.to(roomId).emit(Events.MESSAGE, "Someone joined the room");
+    }
+  }
+
+  public removeSocketFromRoom(roomId: string, socketId: string) {
+    const room = this.rooms[roomId];
+
+    if (room) {
+      const removeIndex = room.sockets.findIndex((socket) => socket.id === socketId);
+      const activeRemoveIndex = room.activeGamePlayers.findIndex((socket) => socket.id === socketId);
+
+      if (removeIndex >= 0) {
+        const [roomSocket] = room.sockets.splice(removeIndex, 1);
+        room.sockets.forEach((socket) => console.log(socket.id));
+        roomSocket.leave(roomId);
+      }
+
+      if (activeRemoveIndex >= 0) {
+        const [activeSocket] = room.activeGamePlayers.splice(activeRemoveIndex, 1);
+        activeSocket.leave(roomId);
+      }
     }
   }
 
@@ -58,7 +87,10 @@ export class RoomManager {
   }
 
   public getAllRooms() {
-    return this.rooms;
+    return Object.keys(this.rooms).reduce((acc: { [key: string]: RoomDTO }, roomKey) => {
+      acc[roomKey] = this.roomToDTO(this.rooms[roomKey]);
+      return acc;
+    }, {});
   }
 
   public removePlayerFromRoom(roomId: string, playerIdToRemove: string) {
