@@ -4,3 +4,5 @@ export const Events = {
   CONNECT_TO_ROOM: "connectToRoom",
   MESSAGE: "message",
 };
+
+// TODO add event body structure here

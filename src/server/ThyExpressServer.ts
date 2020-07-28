@@ -2,7 +2,7 @@ import express from "express";
 import ip from "ip";
 import path from "path";
 
-import { RoomManager, Room } from "./services/RoomManager";
+import { RoomManager, Room, RoomDTO } from "./services/RoomManager";
 
 const ThyExpressServer = express();
 export const roomManager: RoomManager = new RoomManager();
@@ -42,7 +42,19 @@ ThyExpressServer.get("/api/rooms/list", (req, res) => {
 
 // get a specific room
 ThyExpressServer.get("/api/room/:roomId", (req, res) => {
-  res.send({ room: req.params.roomId });
+  const room = roomManager.getRoom(req.params.roomId);
+
+  if (room) {
+    const roomDTO: RoomDTO = {
+      name: room.name,
+      created: room.created,
+      users: room.users,
+      chatHistory: room.chatHistory,
+    };
+    res.send(roomDTO);
+  } else {
+    res.sendStatus(404);
+  }
 });
 
 ThyExpressServer.get("*", (req, res) => {

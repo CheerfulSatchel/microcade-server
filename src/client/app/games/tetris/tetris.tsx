@@ -1,7 +1,8 @@
 // Pulled from FreeCodeCamp course https://github.com/weibenfalk/react-tetris-starter-files/tree/master/Stepped%20Solutions/react-tetris%20-%20FINISHED/src
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import io from "socket.io-client";
 
 import { createStage, checkCollision } from "./helpers";
 
@@ -17,6 +18,8 @@ import Display from "./display";
 import StartButton from "./startButton";
 
 import "./tetris.scss";
+import { Room } from "../../../..//server/services/RoomManager";
+import { Events } from "../../../../server/Constants";
 
 export const StyledTetrisWrapper = styled.div`
   background-size: cover;
@@ -37,13 +40,32 @@ export const StyledTetris = styled.div`
   }
 `;
 
-const Tetris = () => {
+const Tetris = ({ match }) => {
+  const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
   const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(rowsCleared);
+
+  useEffect(() => {
+    if (match?.params?.roomName) {
+      fetch(`/api/room/${match.params.roomName}`)
+        .then((res) => res.json())
+        .then((room: Room) => {
+          const socket = io.connect();
+
+          socket.on(Events.CONNECT, function () {
+            Events;
+            socket.emit(Events.CONNECT_TO_ROOM, room.name);
+          });
+
+          socket.on(Events.MESSAGE, (message) => console.log(message));
+        })
+        .catch((e) => console.warn(e));
+    }
+  }, [match]);
 
   const movePlayer = (dir: number) => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {

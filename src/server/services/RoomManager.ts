@@ -1,6 +1,6 @@
 import socket from "socket.io";
-import io from "socket.io";
 import generate from "adjective-adjective-animal";
+import { Events } from "../Constants";
 
 export interface Room {
   created: Date;
@@ -10,6 +10,12 @@ export interface Room {
   sockets: socket.Socket[];
 }
 
+export interface RoomDTO {
+  created: Date;
+  name: string;
+  users: string[];
+  chatHistory: string[];
+}
 export class RoomManager {
   private rooms: Record<string, Room> = {};
 
@@ -23,12 +29,15 @@ export class RoomManager {
     };
 
     this.rooms[roomId] = newRoom;
+
+    return newRoom;
   }
 
   public addSocketToRoom(roomId: string, newSocket: socket.Socket) {
     if (this.rooms[roomId]) {
       this.rooms[roomId].sockets.push(newSocket);
       newSocket.join(roomId);
+      newSocket.to(roomId).emit(Events.MESSAGE, "Someone joined the room");
     }
   }
 
