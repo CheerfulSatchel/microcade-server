@@ -16,6 +16,7 @@ import { useGameStatus } from "./hooks/useGameStatus";
 import Board from "./board/board";
 import Display from "./display";
 import StartButton from "./startButton";
+import ChatComponent from "./../../shared/ChatComponent";
 
 import "./tetris.scss";
 import { Room } from "../../../..//server/services/RoomManager";
@@ -62,6 +63,8 @@ const Tetris = ({ match }) => {
           });
 
           socket.on(Events.MESSAGE, (message) => console.log(message));
+
+          setSocket(socket);
         })
         .catch((e) => console.warn(e));
     }
@@ -134,6 +137,8 @@ const Tetris = ({ match }) => {
     }
   };
 
+  console.log("WHAA");
+  console.log(socket);
   return (
     <StyledTetrisWrapper role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
       <StyledTetris>
@@ -150,6 +155,7 @@ const Tetris = ({ match }) => {
           )}
           <StartButton callback={startGame} />
         </aside>
+        <ChatComponent connectedWebsocket={socket} />
       </StyledTetris>
     </StyledTetrisWrapper>
   );
