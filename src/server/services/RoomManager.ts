@@ -1,6 +1,8 @@
 import socket from "socket.io";
 import io from "socket.io";
 import generate from "adjective-adjective-animal";
+import ip from "ip";
+import { Events } from "../Constants";
 
 export interface Room {
   created: Date;
@@ -8,6 +10,17 @@ export interface Room {
   users: string[];
   chatHistory: string[];
   sockets: socket.Socket[];
+}
+
+export interface RoomDTO {
+  created: Date;
+  name: string;
+  users: string[];
+  chatHistory: string[];
+}
+
+function getWebsocketURL(roomId: string) {
+  return `ws://${ip.address()}:3001/room/${roomId}`;
 }
 
 export class RoomManager {
@@ -23,12 +36,15 @@ export class RoomManager {
     };
 
     this.rooms[roomId] = newRoom;
+
+    return newRoom;
   }
 
   public addSocketToRoom(roomId: string, newSocket: socket.Socket) {
     if (this.rooms[roomId]) {
       this.rooms[roomId].sockets.push(newSocket);
       newSocket.join(roomId);
+      newSocket.to(roomId).emit(Events.MESSAGE, "Someone joined the room");
     }
   }
 
