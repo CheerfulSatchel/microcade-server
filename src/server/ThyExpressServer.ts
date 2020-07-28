@@ -36,7 +36,7 @@ ThyExpressServer.delete("/api/room/:roomId", (req, res) => {
 
 // lists all rooms
 ThyExpressServer.get("/api/rooms/list", (req, res) => {
-  const allRooms: Record<string, Room> = roomManager.getAllRooms();
+  const allRooms: Record<string, RoomDTO> = roomManager.getAllRooms();
 
   res.send({ allRooms });
 });

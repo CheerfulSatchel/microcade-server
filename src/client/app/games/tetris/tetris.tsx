@@ -43,7 +43,7 @@ export const StyledTetris = styled.div`
 `;
 
 const Tetris = ({ match }) => {
-  const [socket, setSocket] = useState<SocketIOClient.Socket>();
+  const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [gameOverText, setGameOverText] = useState("You lost!");
@@ -52,16 +52,21 @@ const Tetris = ({ match }) => {
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
   const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(rowsCleared);
 
+  function cleanupSocket() {
+    if (socket) {
+      socket.disconnect();
+    }
+  }
+
   useEffect(() => {
-    if (match?.params?.roomName) {
+    if (match?.params?.roomName && !socket) {
       fetch(`/api/room/${match.params.roomName}`)
         .then((res) => res.json())
         .then((room: Room) => {
-          const socket = io.connect();
+          const socket = io();
           setSocket(socket);
 
           socket.on(Events.CONNECT, function () {
-            Events;
             socket.emit(Events.CONNECT_TO_ROOM, room.name);
           });
 
@@ -85,7 +90,9 @@ const Tetris = ({ match }) => {
         })
         .catch((e) => console.warn(e));
     }
-  }, [match]);
+
+    return () => cleanupSocket();
+  }, [socket]);
 
   const movePlayer = (dir: number) => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -152,6 +159,17 @@ const Tetris = ({ match }) => {
     drop();
   };
 
+  const hardDrop = () => {
+    let possibleY = 1;
+
+    while (!checkCollision(player, stage, { x: 0, y: possibleY }) && possibleY < 30) {
+      possibleY++;
+    }
+
+    possibleY--;
+    updatePlayerPos({ x: 0, y: possibleY, collided: false });
+  };
+
   // This one starts the game
   // Custom hook by Dan Abramov
   useInterval(() => {
@@ -169,6 +187,8 @@ const Tetris = ({ match }) => {
         dropPlayer();
       } else if (keyCode === 38) {
         playerRotate(stage, 1);
+      } else if (keyCode === 32) {
+        hardDrop();
       }
     }
   };
