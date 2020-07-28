@@ -5,7 +5,7 @@ import path from "path";
 import { RoomManager, Room } from "./services/RoomManager";
 
 const ThyExpressServer = express();
-const roomManager: RoomManager = new RoomManager();
+export const roomManager: RoomManager = new RoomManager();
 
 const port: number = 3001;
 
@@ -24,7 +24,7 @@ ThyExpressServer.get("/api", (req, res) => {
 ThyExpressServer.post("/api/createRoom", (req, res) => {
   console.log("POST - CREATE ROOM");
   roomManager.createNewRoom().then((roomId: string) => {
-    res.send({ roomId, websocketURL: getWebsocketURL(roomId) });
+    res.send({ roomId });
   });
 });
 
@@ -48,9 +48,5 @@ ThyExpressServer.get("/api/room/:roomId", (req, res) => {
 ThyExpressServer.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../client/index.html"));
 });
-
-function getWebsocketURL(roomId: string) {
-  return `ws://${ip.address()}:3001/room/${roomId}`;
-}
 
 export default ThyExpressServer;

@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import io from "socket.io-client";
 
+import { Events } from "../../../../../server/Constants";
+
 declare namespace TetrisMainPage {
   interface Props {
     userName: string;
@@ -62,9 +64,11 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
 
   const openRoom = (roomName: string) => {
     history.push(`/game?roomId=${roomName}`);
-    console.log("PUSHIE PUSH PUSH");
-    console.log("WUH WUH WUh");
-    const socket = io();
+    const socket = io.connect();
+
+    socket.on(Events.CONNECT, function () {
+      socket.emit(Events.CONNECTTOROOM, roomName);
+    });
   };
 
   useEffect(() => {
