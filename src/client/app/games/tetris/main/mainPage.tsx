@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import io from "socket.io-client";
 
 declare namespace TetrisMainPage {
   interface Props {
@@ -59,7 +60,12 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
 
   const createRoom = () => fetch("/api/createRoom", { method: "POST" }).then(fetchRooms);
 
-  const openRoom = (roomName: string) => history.push(`/game?roomId=${roomName}`);
+  const openRoom = (roomName: string) => {
+    history.push(`/game?roomId=${roomName}`);
+    console.log("PUSHIE PUSH PUSH");
+    console.log("WUH WUH WUh");
+    const socket = io();
+  };
 
   useEffect(() => {
     fetchRooms();
