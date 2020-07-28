@@ -138,9 +138,6 @@ const Tetris = ({ match }) => {
     } else {
       // Game over!
       if (player.pos.y < 1) {
-        // setGameOver(true);
-        // setDropTime(null);
-        // socket.emit(TetrisEvents.FINISH_GAME);
         requestGameFinish();
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
