@@ -1,7 +1,5 @@
 import socket from "socket.io";
-import io from "socket.io";
 import generate from "adjective-adjective-animal";
-import ip from "ip";
 import { Events } from "../Constants";
 
 export interface Room {
@@ -18,11 +16,6 @@ export interface RoomDTO {
   users: string[];
   chatHistory: string[];
 }
-
-function getWebsocketURL(roomId: string) {
-  return `ws://${ip.address()}:3001/room/${roomId}`;
-}
-
 export class RoomManager {
   private rooms: Record<string, Room> = {};
 
