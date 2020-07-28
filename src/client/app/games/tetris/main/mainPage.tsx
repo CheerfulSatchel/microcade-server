@@ -27,16 +27,21 @@ const JoinRoomTextbox = styled.input``;
 const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
   const [roomsList, setRoomsList] = useState<TetrisMainPage.IndexedRoomlist>({});
 
-  useEffect(() => {
+  const fetchRooms = () =>
     fetch("/api/rooms/list")
       .then((res) => res.json())
       .then(({ allRooms }) => setRoomsList(allRooms));
+
+  const createRoom = () => fetch("/api/createRoom", { method: "POST" }).then(fetchRooms);
+
+  useEffect(() => {
+    fetchRooms();
   }, []);
 
   return (
     <div>
       <h2>Hello {userName}</h2>
-      <CreateRoomButton>Create a room</CreateRoomButton>
+      <CreateRoomButton onClick={createRoom}>Create a room</CreateRoomButton>
       <RoomsList>
         {Object.keys(roomsList).map((roomKey) => {
           const room = roomsList[roomKey];
