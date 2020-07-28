@@ -20,6 +20,7 @@ import StartButton from "./startButton";
 import "./tetris.scss";
 import { Room } from "../../../..//server/services/RoomManager";
 import { Events } from "../../../../server/Constants";
+import * as TetrisEvents from "../../../../server/events/tetris";
 
 export const StyledTetrisWrapper = styled.div`
   background-size: cover;
@@ -44,6 +45,7 @@ const Tetris = ({ match }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>();
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
+  const [gameOverText, setGameOverText] = useState("You lost!");
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
@@ -55,6 +57,7 @@ const Tetris = ({ match }) => {
         .then((res) => res.json())
         .then((room: Room) => {
           const socket = io.connect();
+          setSocket(socket);
 
           socket.on(Events.CONNECT, function () {
             Events;
@@ -62,6 +65,22 @@ const Tetris = ({ match }) => {
           });
 
           socket.on(Events.MESSAGE, (message) => console.log(message));
+
+          socket.on(Events.START_GAME, () => {
+            startGame();
+          });
+
+          socket.on(Events.WINNER, () => {
+            setGameOverText("You won!");
+            setGameOver(true);
+            setDropTime(null);
+          });
+
+          socket.on(Events.LOSER, () => {
+            setGameOverText("You lost!");
+            setGameOver(true);
+            setDropTime(null);
+          });
         })
         .catch((e) => console.warn(e));
     }
@@ -82,6 +101,26 @@ const Tetris = ({ match }) => {
     }
   };
 
+  const requestGameStart = () => {
+    fetch(`/api/room/start/${match.params.roomName}`, { method: "POST" });
+    // TODO: Error handling
+  };
+
+  const requestGameFinish = () => {
+    fetch(`/api/room/finish/${match.params.roomName}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ socketId: socket.id }),
+    })
+      .then(() => {})
+      .catch((e) => {
+        setGameOver(true);
+        setDropTime(null);
+      });
+  };
+
   const startGame = () => {
     // Reset everything
     setStage(createStage());
@@ -99,8 +138,7 @@ const Tetris = ({ match }) => {
     } else {
       // Game over!
       if (player.pos.y < 1) {
-        setGameOver(true);
-        setDropTime(null);
+        requestGameFinish();
       }
       updatePlayerPos({ x: 0, y: 0, collided: true });
     }
@@ -135,12 +173,12 @@ const Tetris = ({ match }) => {
   };
 
   return (
-    <StyledTetrisWrapper role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
+    <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
       <StyledTetris>
         <Board stage={stage} />
         <aside>
           {gameOver ? (
-            <Display gameOver={gameOver} text="Game Over" />
+            <Display gameOver={gameOver} text={gameOverText} />
           ) : (
             <div>
               <Display text={`Score: ${score}`} />
@@ -148,7 +186,7 @@ const Tetris = ({ match }) => {
               <Display text={`Level: ${level}`} />
             </div>
           )}
-          <StartButton callback={startGame} />
+          <StartButton callback={requestGameStart} disabled={gameOver} />
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>
