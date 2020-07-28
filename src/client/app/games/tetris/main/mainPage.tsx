@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 
 declare namespace TetrisMainPage {
@@ -48,6 +49,7 @@ const RoomName = styled.h4`
 const RoomCreated = styled.p``;
 
 const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
+  const history = useHistory();
   const [roomsList, setRoomsList] = useState<TetrisMainPage.IndexedRoomlist>({});
 
   const fetchRooms = () =>
@@ -56,6 +58,8 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
       .then(({ allRooms }) => setRoomsList(allRooms));
 
   const createRoom = () => fetch("/api/createRoom", { method: "POST" }).then(fetchRooms);
+
+  const openRoom = (roomName: string) => history.push(`/game?roomId=${roomName}`);
 
   useEffect(() => {
     fetchRooms();
@@ -79,7 +83,7 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
             const createdDate = new Date(room.created);
 
             return (
-              <Room key={room.name}>
+              <Room key={room.name} onClick={() => openRoom(room.name)}>
                 <RoomName>{room.name}</RoomName>
                 <RoomCreated>
                   Created: {createdDate.toLocaleDateString()} {createdDate.toLocaleTimeString()}
