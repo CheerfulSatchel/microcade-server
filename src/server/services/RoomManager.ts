@@ -87,7 +87,6 @@ export class RoomManager {
 
       if (removeIndex >= 0) {
         const [roomSocket] = room.sockets.splice(removeIndex, 1);
-        room.sockets.forEach((socket) => console.log(socket.id));
 
         const userRemoveIdx = this.rooms[roomId].users.findIndex((user) => user === userName);
         if (userRemoveIdx >= 0) {

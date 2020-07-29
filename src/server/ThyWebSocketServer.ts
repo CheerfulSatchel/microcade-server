@@ -11,21 +11,17 @@ server.on("request", ThyExpressServer);
 const webSocketServer = socket(server);
 webSocketServer.on(Events.CONNECTION, (socket: socket.Socket) => {
   const userName: string = socket.handshake.query.userName;
-  console.log(socket);
 
   socket.on(Events.CONNECT_TO_ROOM, (roomName) => {
-    console.log("Connected: " + userName);
     roomManager.addSocketToRoom(roomName, userName, socket);
 
     socket.on("disconnect", () => {
-      console.log(`Goodbye, ${userName}!`);
       roomManager.removeSocketFromRoom(roomName, userName, socket.id);
       socket.leave(roomName);
     });
   });
 
   socket.on(Events.MESSAGE, (roomName, message) => {
-    console.log(`Received message: ${message}`);
     roomManager.sendChatMessageToRoom(roomName, userName, message);
   });
 });
