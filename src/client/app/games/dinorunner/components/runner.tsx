@@ -30,6 +30,7 @@ document.addEventListener("keyup", function (evt) {
 const StyledStage = styled.div`
   border: 2px solid #333;
   background: #111;
+  margin-right: 24px;
 `;
 
 const Container = styled.div`
