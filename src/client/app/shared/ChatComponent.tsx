@@ -16,10 +16,7 @@ interface State {
 
 const SubmitButton = styled.button`
   box-sizing: border-box;
-  margin: 0 0 5px 0;
-  padding: 20px;
-  min-height: 30px;
-  border-radius: 20px;
+
   border: none;
   color: white;
   background: #333;
@@ -67,12 +64,7 @@ export class ChatComponent extends React.Component<Props, State> {
   submitButtonPressed(event) {
     event.preventDefault();
     console.log(`MESSAGE: ${this.state.currentMessage}`);
-    this.props.connectedWebsocket.emit(
-      Events.MESSAGE,
-      this.props.roomName,
-      this.props.userName,
-      this.state.currentMessage
-    );
+    this.props.connectedWebsocket.emit(Events.MESSAGE, this.props.roomName, this.state.currentMessage);
     this.setState({ currentMessage: "" });
   }
 
@@ -80,25 +72,47 @@ export class ChatComponent extends React.Component<Props, State> {
     return (
       <div>
         <textarea
+          style={{
+            backgroundColor: "white",
+            color: "black",
+          }}
           rows={20}
           cols={50}
           disabled={true}
           value={this.state.messages.join("\r\n")}
           ref={this.textArea}
         ></textarea>
-        <form>
+        <div>
           <label>Say something~</label>
-          <input type="text" value={this.state.currentMessage} onChange={this.handleMessageChanged} />
-          <SubmitButton
-            className="Submit"
-            type="submit"
-            value="Submit"
-            onClick={this.submitButtonPressed}
-            onKeyUp={this.submitButtonPressed}
-          >
-            send
-          </SubmitButton>
-        </form>
+          <form style={{ width: "75%" }}>
+            <SubmitButton
+              className="Submit"
+              type="submit"
+              value="Submit"
+              style={{
+                float: "right",
+              }}
+              onClick={this.submitButtonPressed}
+              onKeyUp={this.submitButtonPressed}
+            >
+              send
+            </SubmitButton>
+            <span
+              style={{
+                display: "block",
+                overflow: "hidden",
+                paddingRight: "10px",
+              }}
+            >
+              <input
+                type="text"
+                style={{ width: "100%", borderRadius: "10px" }}
+                value={this.state.currentMessage}
+                onChange={this.handleMessageChanged}
+              />
+            </span>
+          </form>
+        </div>
       </div>
     );
   }

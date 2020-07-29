@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import io from "socket.io-client";
-import "../../../app.css";
+import { Socket } from "socket.io";
 
 declare namespace TetrisMainPage {
   interface Props {
@@ -12,7 +11,7 @@ declare namespace TetrisMainPage {
   interface Room {
     name: string;
     created: string;
-    users: string[];
+    users: Socket[];
     chatHistory: string[];
   }
 
@@ -100,7 +99,7 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
           alt="Microcade logo"
           height="60px"
         ></img>
-        <div className="sub-heading">Welcome to Tetris {userName}</div>
+        <div className="sub-heading">Welcome to Tetris, {userName}!</div>
       </Heading>
       <Content>
         <div style={{ display: "flow-root", paddingBottom: "15px", lineHeight: "26px" }}>

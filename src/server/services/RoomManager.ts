@@ -57,12 +57,14 @@ export class RoomManager {
       this.rooms[roomId].sockets.push(newSocket);
       newSocket.join(roomId);
 
+      this.rooms[roomId].users.push(userName);
+
       this.rooms[roomId].chatMessages.push(`${userName} joined the room`);
       newSocket.to(roomId).emit(Events.MESSAGE, this.rooms[roomId].chatMessages);
     }
   }
 
-  public removeSocketFromRoom(roomId: string, socketId: string) {
+  public removeSocketFromRoom(roomId: string, userName: string, socketId: string) {
     const room = this.rooms[roomId];
 
     if (room) {
@@ -73,7 +75,12 @@ export class RoomManager {
         const [roomSocket] = room.sockets.splice(removeIndex, 1);
         room.sockets.forEach((socket) => console.log(socket.id));
 
-        this.rooms[roomId].chatMessages.push("Someone left the room");
+        const userRemoveIdx = this.rooms[roomId].users.findIndex((user) => user === userName);
+        if (userRemoveIdx >= 0) {
+          this.rooms[roomId].users.splice(userRemoveIdx, 1);
+        }
+
+        this.rooms[roomId].chatMessages.push(`${userName} left the room`);
         roomSocket.to(roomId).emit(Events.MESSAGE, this.rooms[roomId].chatMessages);
         roomSocket.leave(roomId);
       }
@@ -104,14 +111,6 @@ export class RoomManager {
     }, {});
   }
 
-  public removePlayerFromRoom(roomId: string, playerIdToRemove: string) {
-    if (this.getRoom(roomId)) {
-      if (this.getRoom(roomId).users.includes(playerIdToRemove)) {
-        delete this.getRoom(roomId).users[playerIdToRemove];
-      }
-    }
-  }
-
   public deleteRoom(roomId: string) {
     if (this.getRoom(roomId)) {
       delete this.getRoom[roomId];
@@ -120,18 +119,6 @@ export class RoomManager {
 
   public getRoom(roomId: string): Room {
     return this.rooms[roomId];
-  }
-
-  public addUserToRoom(roomId: string, userId: string) {
-    if (!this.rooms[roomId].users.includes(userId)) {
-      this.rooms[roomId].users.push(userId);
-    }
-  }
-
-  public removeRoomIfEmpty(roomId: string) {
-    if (this.rooms[roomId].users.length === 0) {
-      delete this.rooms[roomId];
-    }
   }
 
   public markPlayerFinished(roomId: string, socketId: string) {
@@ -158,7 +145,6 @@ export class RoomManager {
     return true;
   }
 
-  // TODO: Needs author...
   public sendChatMessageToRoom(roomId: string, userName: string, message: string) {
     if (this.rooms[roomId]) {
       const room = this.rooms[roomId];

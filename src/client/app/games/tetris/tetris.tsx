@@ -23,32 +23,19 @@ import "./tetris.scss";
 import { RoomDTO } from "../../../..//server/services/RoomManager";
 import { Events } from "../../../../server/Constants";
 
-// export const Container = styled.div`
-//   overflow: hidden;
-//   background-size: cover;
-//   width: 100%;
-//   position: relative;
-// `;
-
 export const Container = styled.div``;
 
-// export const StyledChatContainer = styled.div`
-//   float: left;
-//   height: 100%;
-//   top: 50%;
-//   transform: translateY(-50%);
-//   resize: vertical;
-// `;
-
-export const StyledChatContainer = styled.div``;
-
-export const StyledTetrisContainer = styled.div`
-  float: left;
+export const StyledChatContainer = styled.div`
+  float: right;
+  width: 50%;
+  background-size: cover;
 `;
 
 export const StyledTetrisWrapper = styled.div`
   background-size: cover;
   overflow: hidden;
+  width: 50%;
+  float: left;
 `;
 
 export const StyledTetris = styled.div`
@@ -84,22 +71,21 @@ const Tetris = ({ match, userName }) => {
   }
 
   useEffect(() => {
-    console.log("MATCCHH " + match);
     if (match?.params?.roomName && !socket) {
       fetch(`/api/room/${match.params.roomName}`)
         .then((res) => res.json())
         .then((room: RoomDTO) => {
-          const socket = io();
+          const socket = io({ query: `userName=${userName}` });
           setSocket(socket);
 
           setRoomName(room.name);
-          setInitialMessages(room.chatMessages);
 
           socket.on(Events.CONNECT, function () {
-            socket.emit(Events.CONNECT_TO_ROOM, room.name, userName);
+            socket.emit(Events.CONNECT_TO_ROOM, room.name);
+            socket.on(Events.MESSAGE, (messages: string[]) => {
+              setInitialMessages(messages);
+            });
           });
-
-          socket.on(Events.MESSAGE, (messages: string[]) => console.log(messages));
 
           socket.on(Events.START_GAME, () => {
             startGame();
@@ -249,14 +235,16 @@ const Tetris = ({ match, userName }) => {
           </aside>
         </StyledTetris>
       </StyledTetrisWrapper>
-      {socket && roomName && initialMessages ? (
-        <ChatComponent
-          connectedWebsocket={socket}
-          userName={userName}
-          roomName={roomName}
-          initialMessages={initialMessages}
-        />
-      ) : null}
+      <StyledChatContainer>
+        {socket && roomName && initialMessages ? (
+          <ChatComponent
+            connectedWebsocket={socket}
+            userName={userName}
+            roomName={roomName}
+            initialMessages={initialMessages}
+          />
+        ) : null}
+      </StyledChatContainer>
     </main>
   );
 };
