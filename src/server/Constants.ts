@@ -7,6 +7,7 @@ export const Events = {
   FINISH_GAME: "finish",
   WINNER: "winner",
   LOSER: "loser",
+  PLAYER_COUNT_UPDATE: "playerCountUpdate",
 };
 
 // TODO add event body structure here
