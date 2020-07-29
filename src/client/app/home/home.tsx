@@ -2,7 +2,7 @@
 // Licensed under the MIT License.
 
 import React from "react";
-import "./home.css";
+import "../app.css";
 import { BrowserRouter as Router, Route, Link, Switch } from "react-router-dom";
 
 class Home extends React.Component {
@@ -13,14 +13,24 @@ class Home extends React.Component {
   render() {
     return (
       <main>
-        <div>
-          <h1>MicroCade</h1> <h3>TIME TO PLAY TETRIS :-)</h3>
-          <Link to="/tetris">
-            <div className="card">Tetris</div>
-          </Link>
-          <div className="card">Drawful</div>
-          <div className="card">Uno</div>
-          <div className="card">Call of Duty: Black Ops IV</div>
+        <h1>
+          <img src={require("../../../resources/images/microcade.png")} alt="Microcade logo" height="75px"></img>
+        </h1>
+        <div className="game-container">
+          <div className="child">
+            <Link to="/tetris">
+              <img className="card" src={require("../../../resources/images/tetris.png")} alt="Tetris image"></img>
+            </Link>
+          </div>
+          <div className="child">
+            <img className="card" src={require("../../../resources/images/drawful.png")} alt="Drawful image"></img>
+          </div>
+          <div className="child">
+            <img className="card" src={require("../../../resources/images/uno.png")} alt="Uno image"></img>
+          </div>
+          <div className="child">
+            <img className="card" src={require("../../../resources/images/dinorun.png")} alt="Dino Run image"></img>
+          </div>
         </div>
       </main>
     );
