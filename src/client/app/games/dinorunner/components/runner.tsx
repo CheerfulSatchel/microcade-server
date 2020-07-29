@@ -50,6 +50,7 @@ const Runner = ({ match }) => {
   const [gameOverText, setGameOverText] = useState("Press start!");
   const [roomName, setRoomName] = useState("");
   const [initialMessages, setInitialMessages] = useState([]);
+  const [remainingPlayers, setRemainingPlayers] = useState(0);
 
   const reqAnimRef = useRef<number>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -139,6 +140,9 @@ const Runner = ({ match }) => {
   };
 
   const startGame = () => {
+    obstacles = [];
+    nextSpawn = INITIAL_SPAWN_TIMER;
+    setScore(0);
     const newPlayer = new Player({
       ctx: canvasRef.current.getContext("2d"),
       keys,
@@ -175,8 +179,9 @@ const Runner = ({ match }) => {
             });
           });
 
-          socket.on(Events.START_GAME, () => {
+          socket.on(Events.START_GAME, (playerCount: number) => {
             startGame();
+            setRemainingPlayers(playerCount);
           });
 
           socket.on(Events.WINNER, () => {
@@ -187,6 +192,10 @@ const Runner = ({ match }) => {
           socket.on(Events.LOSER, () => {
             setGameOverText("You lost!");
             setGameOver(true);
+          });
+
+          socket.on(Events.PLAYER_COUNT_UPDATE, (playerCount: number) => {
+            setRemainingPlayers(playerCount);
           });
         })
         .catch((e) => console.warn(e));
@@ -247,28 +256,23 @@ const Runner = ({ match }) => {
         </Link>
         <div className="sub-heading">Dino Run</div>
       </h1>
-      <div
-        style={{
-          width: "50%",
-        }}
-      >
-        <Container>
-          <StyledStage>
-            <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
-          </StyledStage>
-          <aside>
-            <Display text="Space to jump. Shift to duck." />
-            {gameOver ? (
-              <Display text={gameOverText} />
-            ) : (
-              <div>
-                <Display text={`Distance: ${Math.floor(score / 10)}`} />
-              </div>
-            )}
-            <StartButton callback={requestGameStart} disabled={!gameOver} />
-          </aside>
-        </Container>
-      </div>
+      <Container>
+        <StyledStage>
+          <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
+        </StyledStage>
+        <aside>
+          <Display text="Space to jump. Shift to duck." />
+          {gameOver ? (
+            <Display text={gameOverText} />
+          ) : (
+            <div>
+              <Display text={`Distance: ${Math.floor(score / 10)}`} />
+              <Display text={`Remaining: ${remainingPlayers}`} />
+            </div>
+          )}
+          <StartButton callback={requestGameStart} disabled={!gameOver} />
+        </aside>
+      </Container>
       {socket && roomName && initialMessages ? (
         <ChatComponent
           connectedWebsocket={socket}

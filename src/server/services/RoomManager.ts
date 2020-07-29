@@ -182,6 +182,8 @@ export class RoomManager {
       lastSocket.emit(Events.WINNER);
     }
 
+    room.sockets.forEach((socket) => socket.emit(Events.PLAYER_COUNT_UPDATE, room.activeGamePlayers.length));
+
     return true;
   }
 
@@ -207,8 +209,8 @@ export class RoomManager {
     const room = this.rooms[roomId];
 
     room.gameInProgress = true;
-    room.sockets.forEach((socket) => socket.emit(Events.START_GAME));
     room.activeGamePlayers = [...room.sockets];
+    room.sockets.forEach((socket) => socket.emit(Events.START_GAME, room.activeGamePlayers.length));
 
     return true;
   }

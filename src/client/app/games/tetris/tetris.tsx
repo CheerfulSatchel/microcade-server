@@ -59,6 +59,7 @@ const Tetris = ({ match }) => {
   const [gameOverText, setGameOverText] = useState("You lost!");
   const [roomName, setRoomName] = useState("");
   const [initialMessages, setInitialMessages] = useState([]);
+  const [remainingPlayers, setRemainingPlayers] = useState(0);
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
@@ -87,8 +88,9 @@ const Tetris = ({ match }) => {
             });
           });
 
-          socket.on(Events.START_GAME, () => {
+          socket.on(Events.START_GAME, (playerCount: number) => {
             startGame();
+            setRemainingPlayers(playerCount);
           });
 
           socket.on(Events.WINNER, () => {
@@ -101,6 +103,10 @@ const Tetris = ({ match }) => {
             setGameOverText("You lost!");
             setGameOver(true);
             setDropTime(null);
+          });
+
+          socket.on(Events.PLAYER_COUNT_UPDATE, (count: number) => {
+            setRemainingPlayers(count);
           });
         })
         .catch((e) => console.warn(e));
@@ -229,8 +235,9 @@ const Tetris = ({ match }) => {
             ) : (
               <div>
                 <Display text={`Score: ${score}`} />
-                <Display text={`rows: ${rows}`} />
+                <Display text={`Rows: ${rows}`} />
                 <Display text={`Level: ${level}`} />
+                <Display text={`Remaining: ${remainingPlayers}`} />
               </div>
             )}
             <StartButton callback={requestGameStart} disabled={!gameOver} />

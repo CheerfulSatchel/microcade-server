@@ -14,7 +14,7 @@
   },
   "scripts": {
     "tsc": "tsc -p tsconfig.json",
-    "start": "node out/server/index.js",
+    "start": "npm run tsc && npm run build-ui && node out/server/index.js",
     "build:watch": "tsc -p tsconfig.json -w",
     "build-ui": "parcel build src/client/index.html --out-dir out/client",
     "watch-ui": "parcel src/client/index.html --out-dir out/client",
