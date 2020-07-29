@@ -1,12 +1,16 @@
 // Based off of https://github.com/TylerPottsDev/chrome-dino-replica
 
 import React, { useRef, useState, useEffect } from "react";
+import styled from "styled-components";
 import io from "socket.io-client";
 
 import Obstacle from "../classes/obstacle";
 import Player from "../classes/player";
 
-import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_SPEED, GRAVITY, INITIAL_SPAWN_TIMER } from "../constants";
+import Display from "./display";
+import StartButton from "./startButton";
+
+import { CANVAS_WIDTH, CANVAS_HEIGHT, INITIAL_SPAWN_TIMER } from "../constants";
 import { Events } from "../../../../../server/Constants";
 import { Room } from "../../../../../server/services/RoomManager";
 
@@ -23,12 +27,20 @@ document.addEventListener("keyup", function (evt) {
   keys[evt.code] = false;
 });
 
+const StyledStage = styled.div`
+  border: 2px solid #333;
+  background: #111;
+`;
+
+const Container = styled.div`
+  display: flex;
+`;
+
 const Runner = ({ match }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
-  const [score, setScore] = useState(0);
   const [player, setPlayer] = useState<Player>(null);
   const [gameOver, setGameOver] = useState(true);
-  const [gameOverText, setGameOverText] = useState("You lost!");
+  const [gameOverText, setGameOverText] = useState("Press start!");
 
   const reqAnimRef = useRef<number>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -96,7 +108,6 @@ const Runner = ({ match }) => {
       obstacle.y -= player.originalHeight - 10;
     }
 
-    // setObstacles([...obstacles, obstacle]);
     obstacles.push(obstacle);
   };
 
@@ -196,9 +207,21 @@ const Runner = ({ match }) => {
   return (
     <div>
       <h1>DinoRunner</h1>
-      {gameOver ? <div>{gameOverText}</div> : null}
-      <button onClick={requestGameStart}>Start Game</button>
-      <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
+      <Container>
+        <StyledStage>
+          <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
+        </StyledStage>
+        <aside>
+          {gameOver ? (
+            <Display text={gameOverText} />
+          ) : (
+            <div>
+              <Display text="Distance: " />
+            </div>
+          )}
+          <StartButton callback={requestGameStart} disabled={!gameOver} />
+        </aside>
+      </Container>
     </div>
   );
 };
