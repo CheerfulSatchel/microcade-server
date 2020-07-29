@@ -11,7 +11,7 @@ export interface Room {
   created: Date;
   name: string;
   users: string[];
-  chatHistory: string[];
+  chatMessages: string[];
   sockets: socket.Socket[];
   activeGamePlayers: socket.Socket[];
   gameInProgress: boolean;
@@ -22,7 +22,7 @@ export interface RoomDTO {
   created: Date;
   name: string;
   users: string[];
-  chatHistory: string[];
+  chatMessages: string[];
   gameType: Game;
 }
 export class RoomManager {
@@ -33,7 +33,7 @@ export class RoomManager {
       created: new Date(),
       name: roomId,
       users: [],
-      chatHistory: [],
+      chatMessages: [],
       sockets: [],
       activeGamePlayers: [],
       gameInProgress: false,
@@ -50,7 +50,7 @@ export class RoomManager {
       name: room.name,
       created: room.created,
       users: room.users,
-      chatHistory: room.chatHistory,
+      chatMessages: room.chatMessages,
       gameType: room.gameType,
     };
   }
@@ -66,15 +66,19 @@ export class RoomManager {
     }
   }
 
-  public addSocketToRoom(roomId: string, newSocket: socket.Socket) {
+  public addSocketToRoom(roomId: string, userName: string, newSocket: socket.Socket) {
     if (this.rooms[roomId]) {
       this.rooms[roomId].sockets.push(newSocket);
       newSocket.join(roomId);
-      newSocket.to(roomId).emit(Events.MESSAGE, "Someone joined the room");
+
+      this.rooms[roomId].users.push(userName);
+
+      this.rooms[roomId].chatMessages.push(`${userName} joined the room`);
+      newSocket.to(roomId).emit(Events.MESSAGE, this.rooms[roomId].chatMessages);
     }
   }
 
-  public removeSocketFromRoom(roomId: string, socketId: string) {
+  public removeSocketFromRoom(roomId: string, userName: string, socketId: string) {
     const room = this.rooms[roomId];
 
     if (room) {
@@ -83,7 +87,14 @@ export class RoomManager {
 
       if (removeIndex >= 0) {
         const [roomSocket] = room.sockets.splice(removeIndex, 1);
-        room.sockets.forEach((socket) => console.log(socket.id));
+
+        const userRemoveIdx = this.rooms[roomId].users.findIndex((user) => user === userName);
+        if (userRemoveIdx >= 0) {
+          this.rooms[roomId].users.splice(userRemoveIdx, 1);
+        }
+
+        this.rooms[roomId].chatMessages.push(`${userName} left the room`);
+        roomSocket.to(roomId).emit(Events.MESSAGE, this.rooms[roomId].chatMessages);
         roomSocket.leave(roomId);
       }
 
@@ -150,18 +161,6 @@ export class RoomManager {
     return this.rooms[roomId];
   }
 
-  public addUserToRoom(roomId: string, userId: string) {
-    if (!this.rooms[roomId].users.includes(userId)) {
-      this.rooms[roomId].users.push(userId);
-    }
-  }
-
-  public removeRoomIfEmpty(roomId: string) {
-    if (this.rooms[roomId].users.length === 0) {
-      delete this.rooms[roomId];
-    }
-  }
-
   public markPlayerFinished(roomId: string, socketId: string) {
     const room = this.rooms[roomId];
 
@@ -184,6 +183,20 @@ export class RoomManager {
     }
 
     return true;
+  }
+
+  public sendChatMessageToRoom(roomId: string, userName: string, message: string) {
+    if (this.rooms[roomId]) {
+      const room = this.rooms[roomId];
+
+      const chatMessage = `${userName}: ${message}`;
+
+      room.chatMessages.push(chatMessage);
+
+      room.sockets.forEach((socket) => {
+        socket.send(room.chatMessages);
+      });
+    }
   }
 
   public startGameForRoom(roomId: string) {

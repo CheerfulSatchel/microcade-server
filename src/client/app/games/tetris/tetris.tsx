@@ -17,15 +17,25 @@ import { useGameStatus } from "./hooks/useGameStatus";
 import Board from "./board/board";
 import Display from "./display";
 import StartButton from "./startButton";
+import ChatComponent from "./../../shared/ChatComponent";
 
 import "./tetris.scss";
-import { Room } from "../../../..//server/services/RoomManager";
+import { RoomDTO } from "../../../..//server/services/RoomManager";
 import { Events } from "../../../../server/Constants";
-import * as TetrisEvents from "../../../../server/events/tetris";
+
+export const Container = styled.div``;
+
+export const StyledChatContainer = styled.div`
+  float: right;
+  width: 50%;
+  background-size: cover;
+`;
 
 export const StyledTetrisWrapper = styled.div`
   background-size: cover;
   overflow: hidden;
+  width: 50%;
+  float: left;
 `;
 
 export const StyledTetris = styled.div`
@@ -42,11 +52,13 @@ export const StyledTetris = styled.div`
   }
 `;
 
-const Tetris = ({ match }) => {
+const Tetris = ({ match, userName }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(true);
   const [gameOverText, setGameOverText] = useState("You lost!");
+  const [roomName, setRoomName] = useState("");
+  const [initialMessages, setInitialMessages] = useState([]);
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
@@ -62,15 +74,18 @@ const Tetris = ({ match }) => {
     if (match?.params?.roomName && !socket) {
       fetch(`/api/room/${match.params.roomName}`)
         .then((res) => res.json())
-        .then((room: Room) => {
-          const socket = io();
+        .then((room: RoomDTO) => {
+          const socket = io({ query: `userName=${userName}` });
           setSocket(socket);
+
+          setRoomName(room.name);
 
           socket.on(Events.CONNECT, function () {
             socket.emit(Events.CONNECT_TO_ROOM, room.name);
+            socket.on(Events.MESSAGE, (messages: string[]) => {
+              setInitialMessages(messages);
+            });
           });
-
-          socket.on(Events.MESSAGE, (message) => console.log(message));
 
           socket.on(Events.START_GAME, () => {
             startGame();
@@ -220,6 +235,16 @@ const Tetris = ({ match }) => {
           </aside>
         </StyledTetris>
       </StyledTetrisWrapper>
+      <StyledChatContainer>
+        {socket && roomName && initialMessages ? (
+          <ChatComponent
+            connectedWebsocket={socket}
+            userName={userName}
+            roomName={roomName}
+            initialMessages={initialMessages}
+          />
+        ) : null}
+      </StyledChatContainer>
     </main>
   );
 };

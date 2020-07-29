@@ -14,7 +14,7 @@ const TetrisHome: React.FC<TetrisHome.Props> = ({ userName }) => {
   return (
     <BrowserRouter basename="tetris">
       <Route exact path="/" component={() => <MainPage userName={userName} />} />
-      <Route exact path="/game/:roomName" component={Tetris} />
+      <Route exact path="/game/:roomName" render={(props) => <Tetris {...props} userName={userName} />} />
     </BrowserRouter>
   );
 };

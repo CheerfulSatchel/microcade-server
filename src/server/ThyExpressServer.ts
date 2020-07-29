@@ -55,7 +55,7 @@ ThyExpressServer.get("/api/room/:roomId", (req, res) => {
       name: room.name,
       created: room.created,
       users: room.users,
-      chatHistory: room.chatHistory,
+      chatMessages: room.chatMessages,
       gameType: room.gameType,
     };
     res.send(roomDTO);
