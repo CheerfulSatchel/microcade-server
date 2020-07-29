@@ -5,8 +5,8 @@ export const StyledDisplay = styled.div<{ gameOver?: boolean }>`
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  margin: 0 0 20px 0;
-  padding: 20px;
+  margin: 0 0 12px 0;
+  padding: 10px 20px;
   border: 4px solid #333;
   min-height: 30px;
   overflow: none;

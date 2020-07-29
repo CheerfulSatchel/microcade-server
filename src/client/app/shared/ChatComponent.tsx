@@ -14,6 +14,12 @@ interface State {
   messages: string[];
 }
 
+const ChatContainer = styled.textarea`
+  border-radius: 20px;
+  resize: none;
+  padding: 8px;
+`;
+
 const SubmitButton = styled.button`
   box-sizing: border-box;
 
@@ -71,7 +77,7 @@ export class ChatComponent extends React.Component<Props, State> {
   render() {
     return (
       <div>
-        <textarea
+        <ChatContainer
           style={{
             backgroundColor: "white",
             color: "black",
@@ -81,10 +87,9 @@ export class ChatComponent extends React.Component<Props, State> {
           disabled={true}
           value={this.state.messages.join("\r\n")}
           ref={this.textArea}
-        ></textarea>
+        ></ChatContainer>
         <div>
-          <label>Say something~</label>
-          <form style={{ width: "75%" }}>
+          <form>
             <SubmitButton
               className="Submit"
               type="submit"
@@ -106,7 +111,7 @@ export class ChatComponent extends React.Component<Props, State> {
             >
               <input
                 type="text"
-                style={{ width: "100%", borderRadius: "10px" }}
+                style={{ width: "100%", borderRadius: "10px", padding: 4 }}
                 value={this.state.currentMessage}
                 onChange={this.handleMessageChanged}
               />

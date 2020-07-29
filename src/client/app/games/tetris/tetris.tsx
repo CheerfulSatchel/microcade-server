@@ -37,9 +37,8 @@ export const StyledTetris = styled.div`
   padding: 40px;
   margin: 0 auto;
   max-width: 900px;
+
   aside {
-    width: 100%;
-    max-width: 200px;
     display: block;
     padding: 0 20px;
   }
@@ -50,7 +49,7 @@ const Tetris = ({ match }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(true);
-  const [gameOverText, setGameOverText] = useState("You lost!");
+  const [gameOverText, setGameOverText] = useState("Press start!");
   const [roomName, setRoomName] = useState("");
   const [initialMessages, setInitialMessages] = useState([]);
   const [remainingPlayers, setRemainingPlayers] = useState(0);
@@ -224,13 +223,12 @@ const Tetris = ({ match }) => {
         <StyledTetris>
           <Board stage={stage} tabIndex={0} onKeyDown={(e) => move(e)} onKeyUp={keyUp} />
           <aside>
+            <Display text={`Score: ${score}`} />
+            <Display text={`Rows: ${rows}`} />
             {gameOver ? (
               <Display gameOver={gameOver} text={gameOverText} />
             ) : (
               <div>
-                <Display text={`Score: ${score}`} />
-                <Display text={`Rows: ${rows}`} />
-                <Display text={`Level: ${level}`} />
                 <Display text={`Remaining: ${remainingPlayers}`} />
               </div>
             )}
