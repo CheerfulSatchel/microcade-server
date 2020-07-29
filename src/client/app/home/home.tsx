@@ -11,10 +11,11 @@ class Home extends React.Component {
   }
 
   render() {
+    localStorage.clear();
     // Forgive me
     if (localStorage.getItem("userName") === null) {
-      const queryParameters: string[] = window.location.search.split("=");
-      const userName: string = queryParameters[1];
+      const userName: string = window.location.search.split("=")[1].split("&")[0];
+      console.log("HERE " + userName);
       localStorage.setItem("userName", userName);
     }
 
