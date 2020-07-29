@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import io from "socket.io-client";
+import "../../app.css";
 
 import { createStage, checkCollision } from "./helpers";
 
@@ -191,25 +192,35 @@ const Tetris = ({ match }) => {
       }
     }
   };
-
   return (
-    <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
-      <StyledTetris>
-        <Board stage={stage} />
-        <aside>
-          {gameOver ? (
-            <Display gameOver={gameOver} text={gameOverText} />
-          ) : (
-            <div>
-              <Display text={`Score: ${score}`} />
-              <Display text={`rows: ${rows}`} />
-              <Display text={`Level: ${level}`} />
-            </div>
-          )}
-          <StartButton callback={requestGameStart} disabled={gameOver} />
-        </aside>
-      </StyledTetris>
-    </StyledTetrisWrapper>
+    <main>
+      <h1 style={{ lineHeight: "60px" }}>
+        <img
+          className="microcade-title"
+          src={require("../../../../resources/images/microcade.png")}
+          alt="Microcade logo"
+          height="60px"
+        ></img>
+        <div className="sub-heading">Tetris</div>
+      </h1>
+      <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
+        <StyledTetris>
+          <Board stage={stage} />
+          <aside>
+            {gameOver ? (
+              <Display gameOver={gameOver} text={gameOverText} />
+            ) : (
+              <div>
+                <Display text={`Score: ${score}`} />
+                <Display text={`rows: ${rows}`} />
+                <Display text={`Level: ${level}`} />
+              </div>
+            )}
+            <StartButton callback={requestGameStart} disabled={gameOver} />
+          </aside>
+        </StyledTetris>
+      </StyledTetrisWrapper>
+    </main>
   );
 };
 
