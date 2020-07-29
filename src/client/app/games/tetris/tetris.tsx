@@ -24,14 +24,6 @@ import "./tetris.scss";
 import { RoomDTO } from "../../../..//server/services/RoomManager";
 import { Events } from "../../../../server/Constants";
 
-export const Container = styled.div``;
-
-export const StyledChatContainer = styled.div`
-  float: right;
-  width: 50%;
-  background-size: cover;
-`;
-
 export const StyledTetrisWrapper = styled.div`
   background-size: cover;
   overflow: hidden;
@@ -53,7 +45,8 @@ export const StyledTetris = styled.div`
   }
 `;
 
-const Tetris = ({ match, userName }) => {
+const Tetris = ({ match }) => {
+  const userName: string = localStorage.getItem("userName");
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(true);
@@ -227,9 +220,9 @@ const Tetris = ({ match, userName }) => {
         </Link>
         <div className="sub-heading">Tetris</div>
       </h1>
-      <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
+      <StyledTetrisWrapper>
         <StyledTetris>
-          <Board stage={stage} />
+          <Board stage={stage} tabIndex={0} onKeyDown={(e) => move(e)} onKeyUp={keyUp} />
           <aside>
             {gameOver ? (
               <Display gameOver={gameOver} text={gameOverText} />
@@ -242,19 +235,17 @@ const Tetris = ({ match, userName }) => {
               </div>
             )}
             <StartButton callback={requestGameStart} disabled={!gameOver} />
+            {socket && roomName && initialMessages ? (
+              <ChatComponent
+                connectedWebsocket={socket}
+                userName={userName}
+                roomName={roomName}
+                initialMessages={initialMessages}
+              />
+            ) : null}
           </aside>
         </StyledTetris>
       </StyledTetrisWrapper>
-      <StyledChatContainer>
-        {socket && roomName && initialMessages ? (
-          <ChatComponent
-            connectedWebsocket={socket}
-            userName={userName}
-            roomName={roomName}
-            initialMessages={initialMessages}
-          />
-        ) : null}
-      </StyledChatContainer>
     </main>
   );
 };

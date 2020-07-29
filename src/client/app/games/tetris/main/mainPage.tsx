@@ -3,10 +3,6 @@ import { useHistory, Link } from "react-router-dom";
 import styled from "styled-components";
 
 declare namespace TetrisMainPage {
-  interface Props {
-    userName: string;
-  }
-
   interface Room {
     name: string;
     created: string;
@@ -70,7 +66,8 @@ const Container = styled.div`
 `;
 const RoomCreated = styled.p``;
 
-const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
+const TetrisMainPage: React.FC<{}> = () => {
+  const userName: string = localStorage.getItem("userName");
   const history = useHistory();
   const [roomsList, setRoomsList] = useState<TetrisMainPage.IndexedRoomlist>({});
 
@@ -100,7 +97,7 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
             height="60px"
           ></img>
         </Link>
-        <div className="sub-heading">Welcome to Tetris {userName}</div>
+        <div className="sub-heading">Welcome to Tetris, {userName}!</div>
       </Heading>
       <Content>
         <div style={{ display: "flow-root", paddingBottom: "15px", lineHeight: "26px" }}>

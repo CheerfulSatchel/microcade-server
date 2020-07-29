@@ -10,7 +10,7 @@ export const StyledDisplay = styled.div<{ gameOver?: boolean }>`
   border: 4px solid #333;
   min-height: 30px;
   overflow: none;
-  width: 160px;
+  min-width: 160px;
   border-radius: 20px;
   color: ${(props) => (props.gameOver ? "red" : "#999")};
   background: #000;

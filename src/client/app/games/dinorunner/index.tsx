@@ -3,7 +3,6 @@ import { BrowserRouter, Route } from "react-router-dom";
 
 import Runner from "./components/runner";
 import MainPage from "./main/mainPage";
-import Home from "../../home/home";
 
 const DinoRunner: React.FC = () => (
   <>
