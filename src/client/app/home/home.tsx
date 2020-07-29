@@ -27,14 +27,10 @@ class Home extends React.Component {
             <Link to="/tetris">
               <img className="card" src={require("../../../resources/images/tetris.png")} alt="Tetris image"></img>
             </Link>
-          </div>
-          <div className="child">
             <img className="card" src={require("../../../resources/images/drawful.png")} alt="Drawful image"></img>
           </div>
           <div className="child">
             <img className="card" src={require("../../../resources/images/uno.png")} alt="Uno image"></img>
-          </div>
-          <div className="child">
             <Link to="/dinorunner">
               <img className="card" src={require("../../../resources/images/dinorun.png")} alt="Dino Run image"></img>
             </Link>
