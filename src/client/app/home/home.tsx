@@ -11,7 +11,6 @@ class Home extends React.Component {
   }
 
   render() {
-    localStorage.clear();
     // Forgive me
     if (localStorage.getItem("userName") === null) {
       const userName: string = window.location.search.split("=")[1].split("&")[0];
