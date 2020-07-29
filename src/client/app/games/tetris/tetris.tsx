@@ -226,9 +226,9 @@ const Tetris = ({ match }) => {
         </Link>
         <div className="sub-heading">Tetris</div>
       </h1>
-      <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
+      <StyledTetrisWrapper>
         <StyledTetris>
-          <Board stage={stage} />
+          <Board stage={stage} tabIndex={0} onKeyDown={(e) => move(e)} onKeyUp={keyUp} />
           <aside>
             {gameOver ? (
               <Display gameOver={gameOver} text={gameOverText} />
@@ -241,19 +241,17 @@ const Tetris = ({ match }) => {
               </div>
             )}
             <StartButton callback={requestGameStart} disabled={!gameOver} />
+            {socket && roomName && initialMessages ? (
+              <ChatComponent
+                connectedWebsocket={socket}
+                userName={userName}
+                roomName={roomName}
+                initialMessages={initialMessages}
+              />
+            ) : null}
           </aside>
         </StyledTetris>
       </StyledTetrisWrapper>
-      <StyledChatContainer>
-        {socket && roomName && initialMessages ? (
-          <ChatComponent
-            connectedWebsocket={socket}
-            userName={userName}
-            roomName={roomName}
-            initialMessages={initialMessages}
-          />
-        ) : null}
-      </StyledChatContainer>
     </main>
   );
 };

@@ -13,8 +13,14 @@ export const StyledStage = styled.div<{ width?: number; height?: number }>`
   background: #111;
 `;
 
-const Stage = ({ stage }) => (
-  <StyledStage width={stage[0].length} height={stage.length}>
+const Stage = ({ stage, tabIndex, onKeyDown, onKeyUp }) => (
+  <StyledStage
+    width={stage[0].length}
+    height={stage.length}
+    tabIndex={tabIndex}
+    onKeyDown={onKeyDown}
+    onKeyUp={onKeyUp}
+  >
     {stage.map((row) => row.map((cell, x) => <Cell key={x} type={cell[0]} />))}
   </StyledStage>
 );
