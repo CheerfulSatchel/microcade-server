@@ -15,7 +15,7 @@ class Home extends React.Component {
     // Forgive me
     if (userName) {
       localStorage.setItem("userName", userName);
-    } else {
+    } else if (localStorage.getItem("userName") === null) {
       localStorage.setItem("userName", "Unnamed Weirdo");
     }
   }
