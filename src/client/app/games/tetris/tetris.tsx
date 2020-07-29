@@ -24,12 +24,6 @@ import "./tetris.scss";
 import { RoomDTO } from "../../../..//server/services/RoomManager";
 import { Events } from "../../../../server/Constants";
 
-export const StyledChatContainer = styled.div`
-  float: right;
-  width: 50%;
-  background-size: cover;
-`;
-
 export const StyledTetrisWrapper = styled.div`
   background-size: cover;
   overflow: hidden;
