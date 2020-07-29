@@ -1,6 +1,7 @@
 // Pulled from FreeCodeCamp course https://github.com/weibenfalk/react-tetris-starter-files/tree/master/Stepped%20Solutions/react-tetris%20-%20FINISHED/src
 
 import React, { useState, useEffect } from "react";
+import { useHistory, Link } from "react-router-dom";
 import styled from "styled-components";
 import io from "socket.io-client";
 import "../../app.css";
@@ -210,12 +211,14 @@ const Tetris = ({ match, userName }) => {
   return (
     <main>
       <h1 style={{ lineHeight: "60px" }}>
-        <img
-          className="microcade-title"
-          src={require("../../../../resources/images/microcade.png")}
-          alt="Microcade logo"
-          height="60px"
-        ></img>
+        <Link to="/home">
+          <img
+            className="microcade-title"
+            src={require("../../../../resources/images/microcade.png")}
+            alt="Microcade logo"
+            height="60px"
+          ></img>
+        </Link>
         <div className="sub-heading">Tetris</div>
       </h1>
       <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>

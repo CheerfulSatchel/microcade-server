@@ -3,12 +3,13 @@ import { BrowserRouter, Route } from "react-router-dom";
 
 import Runner from "./components/runner";
 import MainPage from "./main/mainPage";
+import Home from "../../home/home";
 
 const DinoRunner: React.FC = () => (
-  <BrowserRouter basename="dinorunner">
-    <Route exact path="/" component={MainPage} />
-    <Route exact path="/game/:roomName" component={Runner} />
-  </BrowserRouter>
+  <>
+    <Route exact path="/dinorunner" component={MainPage} />
+    <Route exact path="/dinorunner/game/:roomName" component={Runner} />
+  </>
 );
 
 export default DinoRunner;
