@@ -53,7 +53,7 @@ class Player {
     this.c = props.c;
 
     this.dy = 0;
-    this.jumpForce = 15;
+    this.jumpForce = 12;
     this.jumpTimer = 0;
     this.originalHeight = props.h;
     this.grounded = false;
