@@ -17,3 +17,4 @@ The best way I can see to dev is 3-fold
 # Credits
 
 Tetris app: https://github.com/weibenfalk/react-tetris-starter-files
+DinoRunner: https://github.com/TylerPottsDev/chrome-dino-replica
