@@ -75,6 +75,7 @@ export class RoomManager {
 
       this.rooms[roomId].chatMessages.push(`${userName} joined the room`);
       newSocket.to(roomId).emit(Events.MESSAGE, this.rooms[roomId].chatMessages);
+      newSocket.emit(Events.MESSAGE, this.rooms[roomId].chatMessages);
     }
   }
 
