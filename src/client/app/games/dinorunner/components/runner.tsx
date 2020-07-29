@@ -45,6 +45,7 @@ const Runner = ({ match }) => {
   const [player, setPlayer] = useState<Player>(null);
   const [gameOver, setGameOver] = useState(true);
   const [gameOverText, setGameOverText] = useState("Press start!");
+  const [remainingPlayers, setRemainingPlayers] = useState(0);
 
   const reqAnimRef = useRef<number>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -170,8 +171,9 @@ const Runner = ({ match }) => {
 
           socket.on(Events.MESSAGE, (message) => console.log(message));
 
-          socket.on(Events.START_GAME, () => {
+          socket.on(Events.START_GAME, (playerCount: number) => {
             startGame();
+            setRemainingPlayers(playerCount);
           });
 
           socket.on(Events.WINNER, () => {
@@ -182,6 +184,10 @@ const Runner = ({ match }) => {
           socket.on(Events.LOSER, () => {
             setGameOverText("You lost!");
             setGameOver(true);
+          });
+
+          socket.on(Events.PLAYER_COUNT_UPDATE, (playerCount: number) => {
+            setRemainingPlayers(playerCount);
           });
         })
         .catch((e) => console.warn(e));
@@ -253,6 +259,7 @@ const Runner = ({ match }) => {
           ) : (
             <div>
               <Display text={`Distance: ${Math.floor(score / 10)}`} />
+              <Display text={`Remaining: ${remainingPlayers}`} />
             </div>
           )}
           <StartButton callback={requestGameStart} disabled={!gameOver} />
