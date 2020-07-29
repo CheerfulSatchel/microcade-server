@@ -37,6 +37,7 @@ const Container = styled.div`
 `;
 
 const Runner = ({ match }) => {
+  const [score, setScore] = useState(0);
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [player, setPlayer] = useState<Player>(null);
   const [gameOver, setGameOver] = useState(true);
@@ -75,12 +76,14 @@ const Runner = ({ match }) => {
       ) {
         obstacles = [];
         nextSpawn = INITIAL_SPAWN_TIMER;
+        setScore(0);
         requestGameFinish();
       }
 
       obstacle.update();
     });
 
+    setScore((score) => score + 1);
     player.animate();
   };
 
@@ -216,7 +219,7 @@ const Runner = ({ match }) => {
             <Display text={gameOverText} />
           ) : (
             <div>
-              <Display text="Distance: " />
+              <Display text={`Distance: ${Math.floor(score / 10)}`} />
             </div>
           )}
           <StartButton callback={requestGameStart} disabled={!gameOver} />
