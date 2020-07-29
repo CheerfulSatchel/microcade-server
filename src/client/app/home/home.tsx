@@ -10,13 +10,17 @@ class Home extends React.Component {
     super(props);
   }
 
-  render() {
+  componentDidMount() {
+    const userName = window.location.search && window.location.search.split("=")[1].split("&")[0];
     // Forgive me
-    if (localStorage.getItem("userName") === null) {
-      const userName: string = window.location.search.split("=")[1].split("&")[0];
+    if (userName) {
       localStorage.setItem("userName", userName);
+    } else {
+      localStorage.setItem("userName", "Unnamed Weirdo");
     }
+  }
 
+  render() {
     return (
       <main>
         <h1>
