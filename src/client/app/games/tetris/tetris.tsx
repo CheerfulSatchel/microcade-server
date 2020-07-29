@@ -19,9 +19,31 @@ import StartButton from "./startButton";
 import ChatComponent from "./../../shared/ChatComponent";
 
 import "./tetris.scss";
-import { Room } from "../../../..//server/services/RoomManager";
+import { RoomDTO } from "../../../..//server/services/RoomManager";
 import { Events } from "../../../../server/Constants";
-import * as TetrisEvents from "../../../../server/events/tetris";
+
+// export const Container = styled.div`
+//   overflow: hidden;
+//   background-size: cover;
+//   width: 100%;
+//   position: relative;
+// `;
+
+export const Container = styled.div``;
+
+// export const StyledChatContainer = styled.div`
+//   float: left;
+//   height: 100%;
+//   top: 50%;
+//   transform: translateY(-50%);
+//   resize: vertical;
+// `;
+
+export const StyledChatContainer = styled.div``;
+
+export const StyledTetrisContainer = styled.div`
+  float: left;
+`;
 
 export const StyledTetrisWrapper = styled.div`
   background-size: cover;
@@ -42,11 +64,13 @@ export const StyledTetris = styled.div`
   }
 `;
 
-const Tetris = ({ match }) => {
+const Tetris = ({ match, userName }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
   const [gameOverText, setGameOverText] = useState("You lost!");
+  const [roomName, setRoomName] = useState("");
+  const [initialMessages, setInitialMessages] = useState([]);
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
@@ -59,18 +83,22 @@ const Tetris = ({ match }) => {
   }
 
   useEffect(() => {
+    console.log("MATCCHH " + match);
     if (match?.params?.roomName && !socket) {
       fetch(`/api/room/${match.params.roomName}`)
         .then((res) => res.json())
-        .then((room: Room) => {
+        .then((room: RoomDTO) => {
           const socket = io();
           setSocket(socket);
 
+          setRoomName(room.name);
+          setInitialMessages(room.chatMessages);
+
           socket.on(Events.CONNECT, function () {
-            socket.emit(Events.CONNECT_TO_ROOM, room.name);
+            socket.emit(Events.CONNECT_TO_ROOM, room.name, userName);
           });
 
-          socket.on(Events.MESSAGE, (message) => console.log(message));
+          socket.on(Events.MESSAGE, (messages: string[]) => console.log(messages));
 
           socket.on(Events.START_GAME, () => {
             startGame();
@@ -196,24 +224,37 @@ const Tetris = ({ match }) => {
   console.log("WHAA");
   console.log(socket);
   return (
-    <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
-      <StyledTetris>
-        <Board stage={stage} />
-        <aside>
-          {gameOver ? (
-            <Display gameOver={gameOver} text={gameOverText} />
-          ) : (
-            <div>
-              <Display text={`Score: ${score}`} />
-              <Display text={`rows: ${rows}`} />
-              <Display text={`Level: ${level}`} />
-            </div>
-          )}
-          <StartButton callback={requestGameStart} disabled={gameOver} />
-        </aside>
-        <ChatComponent connectedWebsocket={socket} />
-      </StyledTetris>
-    </StyledTetrisWrapper>
+    <Container>
+      <StyledTetrisContainer>
+        <StyledTetrisWrapper tabIndex={0} role="button" onKeyDown={(e) => move(e)} onKeyUp={keyUp}>
+          <StyledTetris>
+            <Board stage={stage} />
+            <aside>
+              {gameOver ? (
+                <Display gameOver={gameOver} text={gameOverText} />
+              ) : (
+                <div>
+                  <Display text={`Score: ${score}`} />
+                  <Display text={`rows: ${rows}`} />
+                  <Display text={`Level: ${level}`} />
+                </div>
+              )}
+              <StartButton callback={requestGameStart} disabled={gameOver} />
+            </aside>
+          </StyledTetris>
+        </StyledTetrisWrapper>
+      </StyledTetrisContainer>
+      <StyledChatContainer>
+        {socket && roomName && initialMessages ? (
+          <ChatComponent
+            connectedWebsocket={socket}
+            userName={userName}
+            roomName={roomName}
+            initialMessages={initialMessages}
+          />
+        ) : null}
+      </StyledChatContainer>
+    </Container>
   );
 };
 
