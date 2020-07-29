@@ -13,3 +13,7 @@ The best way I can see to dev is 3-fold
 3. In a third window, run `yarn watch-ui`. This will watch-compile the CLIENT TS files.
 
 - Don't use the port generated from this, use localhost:3001
+
+# Credits
+
+Tetris app: https://github.com/weibenfalk/react-tetris-starter-files
