@@ -88,6 +88,22 @@ const Runner = ({ match }) => {
     player.animate();
   };
 
+  const getHeight = (size: number) => {
+    const number = randomNumber(1, 4);
+    switch (number) {
+      case 1:
+        return size;
+      case 2:
+        return size + 5;
+      case 3:
+        return size + 15;
+      case 4:
+        return size + 25;
+      default:
+        return size;
+    }
+  };
+
   const spawnObstacle = () => {
     /*
       TODO: Make the random number a bit more fixed between 4 heights
@@ -97,7 +113,7 @@ const Runner = ({ match }) => {
       high (high jump);
     */
     const size = randomNumber(30, 70);
-    const addedY = randomNumber(30, 100);
+    const addedY = getHeight(size);
     const type = randomNumber(0, 1);
     const obstacle = new Obstacle({
       ctx: canvasRef.current.getContext("2d"),
