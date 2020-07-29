@@ -1,8 +1,9 @@
 import React from "react";
-import { BrowserRouter, Route } from "react-router-dom";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
 
 import MainPage from "./main/mainPage";
 import Tetris from "./tetris";
+import Home from "../../home/home";
 
 declare namespace TetrisHome {
   interface Props {
@@ -12,10 +13,10 @@ declare namespace TetrisHome {
 
 const TetrisHome: React.FC<TetrisHome.Props> = ({ userName }) => {
   return (
-    <BrowserRouter basename="tetris">
-      <Route exact path="/" component={() => <MainPage userName={userName} />} />
-      <Route exact path="/game/:roomName" render={(props) => <Tetris {...props} userName={userName} />} />
-    </BrowserRouter>
+    <>
+      <Route exact path="/tetris" component={() => <MainPage userName={userName} />} />
+      <Route exact path="/tetris/game/:roomName" component={Tetris} />
+    </>
   );
 };
 

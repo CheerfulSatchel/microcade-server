@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useHistory } from "react-router-dom";
+import { useHistory, Link } from "react-router-dom";
 import styled from "styled-components";
 
 import "../../../app.css";
@@ -82,7 +82,7 @@ const TetrisMainPage: React.FC<RunnerMainPage.Props> = ({ userName }) => {
   const createRoom = () => fetch("/api/createRoom/dinorunner", { method: "POST" }).then(fetchRooms);
 
   const openRoom = (roomName: string) => {
-    history.push(`/game/${roomName}`);
+    history.push(`/dinorunner/game/${roomName}`);
   };
 
   useEffect(() => {
@@ -92,13 +92,15 @@ const TetrisMainPage: React.FC<RunnerMainPage.Props> = ({ userName }) => {
   return (
     <Container>
       <Heading>
-        <img
-          className="microcade-title"
-          src={require("../../../../../resources/images/microcade.png")}
-          alt="Microcade logo"
-          height="60px"
-        ></img>
-        <div className="sub-heading">Welcome to DinoRunner {userName}</div>
+        <Link to="/home">
+          <img
+            className="microcade-title"
+            src={require("../../../../../resources/images/microcade.png")}
+            alt="Microcade logo"
+            height="60px"
+          ></img>
+        </Link>
+        <div className="sub-heading">Welcome to Dino Run {userName}</div>
       </Heading>
       <Content>
         <div style={{ display: "flow-root", paddingBottom: "15px", lineHeight: "26px" }}>

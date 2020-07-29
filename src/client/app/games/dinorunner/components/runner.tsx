@@ -3,6 +3,7 @@
 import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import io from "socket.io-client";
+import { Link } from "react-router-dom";
 
 import Obstacle from "../classes/obstacle";
 import Player from "../classes/player";
@@ -13,6 +14,7 @@ import StartButton from "./startButton";
 import { CANVAS_WIDTH, CANVAS_HEIGHT, INITIAL_SPAWN_TIMER } from "../constants";
 import { Events } from "../../../../../server/Constants";
 import { Room } from "../../../../../server/services/RoomManager";
+import "../../../app.css";
 
 let nextSpawn = INITIAL_SPAWN_TIMER;
 let obstacles: Obstacle[] = [];
@@ -226,7 +228,17 @@ const Runner = ({ match }) => {
 
   return (
     <div>
-      <h1>DinoRunner</h1>
+      <h1 style={{ lineHeight: "60px" }}>
+        <Link to="/home">
+          <img
+            className="microcade-title"
+            src={require("../../../../../resources/images/microcade.png")}
+            alt="Microcade logo"
+            height="60px"
+          ></img>
+        </Link>
+        <div className="sub-heading">Dino Run</div>
+      </h1>
       <Container>
         <StyledStage>
           <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
