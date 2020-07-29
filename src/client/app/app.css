@@ -1,0 +1,86 @@
+.App {
+  text-align: center;
+}
+h1 {
+  color: white;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid white;
+  display: flex;
+}
+h2 {
+  font-size: 0.8em;
+}
+.game-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.child {
+  width: 50%;
+  text-align: center;
+}
+main {
+  padding: 0px 50px 0 50px;
+}
+.card {
+  background: #fff;
+  color: black;
+  border-radius: 2px;
+  display: inline-block;
+  height: 300px;
+  margin: 1rem;
+  position: relative;
+  width: 300px;
+  border-radius: 30px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+  transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+.card:hover {
+  box-shadow: 0 14px 28px rgba(255, 255, 255, 0.25), 10px 10px 10px rgba(255, 255, 255, 0.22);
+}
+
+.button {
+  display: inline-block;
+  padding: 0.3em 1.2em;
+  margin: 0 0.1em 0.1em 0;
+  border: 0.16em solid rgba(255, 255, 255, 0);
+  border-radius: 2em;
+  font-size: 16px;
+  box-sizing: border-box;
+  text-decoration: none;
+  font-family: "Roboto", sans-serif;
+  font-weight: 300;
+  color: #ffffff;
+  text-shadow: 0 0.04em 0.04em rgba(0, 0, 0, 0.35);
+  text-align: center;
+  transition: all 0.2s;
+  background-color: #4e9af1;
+}
+.button:hover {
+  border-color: rgba(255, 255, 255, 1);
+}
+
+.mar-right {
+  margin-right: 20px;
+}
+
+.sub-heading {
+  margin-left: 20px;
+  font-size: 25px;
+}
+.join-message {
+  padding: 0 5px 0 20px;
+  border-left: 1px solid white;
+}
+
+.h2-bold {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+.microcade-title {
+  border-right: 1px solid white;
+  padding-right: 20px;
+}
