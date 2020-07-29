@@ -35,7 +35,7 @@ export default class Player {
     this.c = props.c;
 
     this.dy = 0;
-    this.jumpForce = 12;
+    this.jumpForce = 10;
     this.jumpTimer = 0;
     this.originalHeight = props.h;
     this.grounded = false;

@@ -96,8 +96,8 @@ const Runner = ({ match }) => {
       mid (short jump)
       high (high jump);
     */
-    const size = randomNumber(40, 70);
-    const addedY = randomNumber(20, 100);
+    const size = randomNumber(30, 70);
+    const addedY = randomNumber(30, 100);
     const type = randomNumber(0, 1);
     const obstacle = new Obstacle({
       ctx: canvasRef.current.getContext("2d"),
@@ -216,6 +216,7 @@ const Runner = ({ match }) => {
           <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
         </StyledStage>
         <aside>
+          <Display text="Space to jump. Shift to duck." />
           {gameOver ? (
             <Display text={gameOverText} />
           ) : (
