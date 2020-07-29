@@ -24,8 +24,6 @@ import "./tetris.scss";
 import { RoomDTO } from "../../../..//server/services/RoomManager";
 import { Events } from "../../../../server/Constants";
 
-export const Container = styled.div``;
-
 export const StyledChatContainer = styled.div`
   float: right;
   width: 50%;
@@ -53,7 +51,8 @@ export const StyledTetris = styled.div`
   }
 `;
 
-const Tetris = ({ match, userName }) => {
+const Tetris = ({ match }) => {
+  const userName: string = localStorage.getItem("userName");
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(true);

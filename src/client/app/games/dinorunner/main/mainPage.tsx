@@ -5,10 +5,6 @@ import styled from "styled-components";
 import "../../../app.css";
 
 declare namespace RunnerMainPage {
-  interface Props {
-    userName: string;
-  }
-
   interface Room {
     name: string;
     created: string;
@@ -70,7 +66,8 @@ const Container = styled.div`
 `;
 const RoomCreated = styled.p``;
 
-const TetrisMainPage: React.FC<RunnerMainPage.Props> = ({ userName }) => {
+const TetrisMainPage: React.FC<{}> = () => {
+  const userName = localStorage.getItem("userName");
   const history = useHistory();
   const [roomsList, setRoomsList] = useState<RunnerMainPage.IndexedRoomlist>({});
 
@@ -100,7 +97,7 @@ const TetrisMainPage: React.FC<RunnerMainPage.Props> = ({ userName }) => {
             height="60px"
           ></img>
         </Link>
-        <div className="sub-heading">Welcome to Dino Run {userName}</div>
+        <div className="sub-heading">Welcome to Dino Run, {userName}!</div>
       </Heading>
       <Content>
         <div style={{ display: "flow-root", paddingBottom: "15px", lineHeight: "26px" }}>

@@ -16,6 +16,8 @@ import { Events } from "../../../../../server/Constants";
 import { Room } from "../../../../../server/services/RoomManager";
 import "../../../app.css";
 
+import ChatComponent from "../../../shared/ChatComponent";
+
 let nextSpawn = INITIAL_SPAWN_TIMER;
 let obstacles: Obstacle[] = [];
 
@@ -40,11 +42,14 @@ const Container = styled.div`
 `;
 
 const Runner = ({ match }) => {
+  const userName: string = localStorage.getItem("userName");
   const [score, setScore] = useState(0);
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [player, setPlayer] = useState<Player>(null);
   const [gameOver, setGameOver] = useState(true);
   const [gameOverText, setGameOverText] = useState("Press start!");
+  const [roomName, setRoomName] = useState("");
+  const [initialMessages, setInitialMessages] = useState([]);
 
   const reqAnimRef = useRef<number>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -158,14 +163,17 @@ const Runner = ({ match }) => {
       fetch(`/api/room/${match.params.roomName}`)
         .then((res) => res.json())
         .then((room: Room) => {
-          const socket = io();
+          const socket = io({ query: `userName=${userName}` });
           setSocket(socket);
+
+          setRoomName(room.name);
 
           socket.on(Events.CONNECT, function () {
             socket.emit(Events.CONNECT_TO_ROOM, room.name);
+            socket.on(Events.MESSAGE, (messages: string[]) => {
+              setInitialMessages(messages);
+            });
           });
-
-          socket.on(Events.MESSAGE, (message) => console.log(message));
 
           socket.on(Events.START_GAME, () => {
             startGame();
@@ -227,7 +235,7 @@ const Runner = ({ match }) => {
   };
 
   return (
-    <div>
+    <main>
       <h1 style={{ lineHeight: "60px" }}>
         <Link to="/home">
           <img
@@ -239,23 +247,37 @@ const Runner = ({ match }) => {
         </Link>
         <div className="sub-heading">Dino Run</div>
       </h1>
-      <Container>
-        <StyledStage>
-          <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
-        </StyledStage>
-        <aside>
-          <Display text="Space to jump. Shift to duck." />
-          {gameOver ? (
-            <Display text={gameOverText} />
-          ) : (
-            <div>
-              <Display text={`Distance: ${Math.floor(score / 10)}`} />
-            </div>
-          )}
-          <StartButton callback={requestGameStart} disabled={!gameOver} />
-        </aside>
-      </Container>
-    </div>
+      <div
+        style={{
+          width: "50%",
+        }}
+      >
+        <Container>
+          <StyledStage>
+            <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
+          </StyledStage>
+          <aside>
+            <Display text="Space to jump. Shift to duck." />
+            {gameOver ? (
+              <Display text={gameOverText} />
+            ) : (
+              <div>
+                <Display text={`Distance: ${Math.floor(score / 10)}`} />
+              </div>
+            )}
+            <StartButton callback={requestGameStart} disabled={!gameOver} />
+          </aside>
+        </Container>
+      </div>
+      {socket && roomName && initialMessages ? (
+        <ChatComponent
+          connectedWebsocket={socket}
+          userName={userName}
+          roomName={roomName}
+          initialMessages={initialMessages}
+        />
+      ) : null}
+    </main>
   );
 };
 
