@@ -134,6 +134,9 @@ const Runner = ({ match }) => {
   };
 
   const startGame = () => {
+    obstacles = [];
+    nextSpawn = INITIAL_SPAWN_TIMER;
+    setScore(0);
     const newPlayer = new Player({
       ctx: canvasRef.current.getContext("2d"),
       keys,
