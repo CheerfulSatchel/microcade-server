@@ -167,7 +167,7 @@ const Tetris = ({ match }) => {
     }
 
     possibleY--;
-    updatePlayerPos({ x: 0, y: possibleY, collided: false });
+    updatePlayerPos({ x: 0, y: possibleY, collided: true });
   };
 
   // This one starts the game
