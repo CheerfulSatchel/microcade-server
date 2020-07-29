@@ -77,11 +77,11 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
   const [roomsList, setRoomsList] = useState<TetrisMainPage.IndexedRoomlist>({});
 
   const fetchRooms = () =>
-    fetch("/api/rooms/list")
+    fetch("/api/rooms/list/tetris")
       .then((res) => res.json())
       .then(({ allRooms }) => setRoomsList(allRooms));
 
-  const createRoom = () => fetch("/api/createRoom", { method: "POST" }).then(fetchRooms);
+  const createRoom = () => fetch("/api/createRoom/tetris", { method: "POST" }).then(fetchRooms);
 
   const openRoom = (roomName: string) => {
     history.push(`/game/${roomName}`);
