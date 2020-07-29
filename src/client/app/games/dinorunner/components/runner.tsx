@@ -7,6 +7,8 @@ import Obstacle from "../classes/obstacle";
 import Player from "../classes/player";
 
 import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_SPEED, GRAVITY, INITIAL_SPAWN_TIMER } from "../constants";
+import { Events } from "../../../../../server/Constants";
+import { Room } from "../../../../../server/services/RoomManager";
 
 let nextSpawn = INITIAL_SPAWN_TIMER;
 let obstacles: Obstacle[] = [];
@@ -21,14 +23,12 @@ document.addEventListener("keyup", function (evt) {
   keys[evt.code] = false;
 });
 
-const Runner: React.FC = () => {
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
+const Runner = ({ match }) => {
+  const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [score, setScore] = useState(0);
   const [player, setPlayer] = useState<Player>(null);
-  // const [obstacles, setObstacles] = useState<Obstacle[]>([]);
-
-  // const [nextSpawn, setNextSpawn] = useState(initialSpawnTimer);
+  const [gameOver, setGameOver] = useState(true);
+  const [gameOverText, setGameOverText] = useState("You lost!");
 
   const reqAnimRef = useRef<number>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -54,6 +54,7 @@ const Runner: React.FC = () => {
         obstacles.splice(i, 1);
       }
 
+      // Player collided
       if (
         player?.x < obstacle.x + obstacle.w &&
         player?.x + player.w > obstacle.x &&
@@ -61,8 +62,8 @@ const Runner: React.FC = () => {
         player?.y + player?.h > obstacle.y
       ) {
         obstacles = [];
-        setScore(0);
         nextSpawn = INITIAL_SPAWN_TIMER;
+        requestGameFinish();
       }
 
       obstacle.update();
@@ -72,7 +73,13 @@ const Runner: React.FC = () => {
   };
 
   const spawnObstacle = () => {
-    // TODO: Make the random number a bit more fixed between 4 heights
+    /*
+      TODO: Make the random number a bit more fixed between 4 heights
+      ground
+      low (crouch)
+      mid (short jump)
+      high (high jump);
+    */
     const size = randomNumber(40, 70);
     const addedY = randomNumber(20, 100);
     const type = randomNumber(0, 1);
@@ -93,20 +100,67 @@ const Runner: React.FC = () => {
     obstacles.push(obstacle);
   };
 
-  useEffect(() => {
-    if (canvasRef !== null) {
-      const newPlayer = new Player({
-        ctx: canvasRef.current.getContext("2d"),
-        keys,
-        x: 25,
-        y: 0,
-        w: 50,
-        h: 50,
-        c: "#FF5858",
-      });
-      setPlayer(newPlayer);
+  const startGame = () => {
+    const newPlayer = new Player({
+      ctx: canvasRef.current.getContext("2d"),
+      keys,
+      x: 25,
+      y: 0,
+      w: 50,
+      h: 50,
+      c: "#FF5858",
+    });
+    setPlayer(newPlayer);
+    setGameOver(false);
+  };
+
+  const cleanupSocket = () => {
+    if (socket) {
+      socket.disconnect();
     }
-  }, [canvasRef]);
+  };
+
+  useEffect(() => {
+    if (match?.params?.roomName && !socket) {
+      fetch(`/api/room/${match.params.roomName}`)
+        .then((res) => res.json())
+        .then((room: Room) => {
+          const socket = io();
+          setSocket(socket);
+
+          socket.on(Events.CONNECT, function () {
+            socket.emit(Events.CONNECT_TO_ROOM, room.name);
+          });
+
+          socket.on(Events.MESSAGE, (message) => console.log(message));
+
+          socket.on(Events.START_GAME, () => {
+            startGame();
+          });
+
+          socket.on(Events.WINNER, () => {
+            setGameOverText("You won!");
+            setGameOver(true);
+          });
+
+          socket.on(Events.LOSER, () => {
+            setGameOverText("You lost!");
+            setGameOver(true);
+          });
+        })
+        .catch((e) => console.warn(e));
+    }
+
+    return () => cleanupSocket();
+  }, [socket]);
+
+  useEffect(() => {
+    if (!gameOver) {
+      startGame();
+    } else {
+      cancelAnimationFrame(reqAnimRef.current);
+    }
+  }, [gameOver]);
 
   useEffect(() => {
     if (player !== null) {
@@ -119,9 +173,31 @@ const Runner: React.FC = () => {
     };
   }, [player]);
 
+  const requestGameFinish = () => {
+    cancelAnimationFrame(reqAnimRef.current);
+    fetch(`/api/room/finish/${match.params.roomName}`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ socketId: socket.id }),
+    })
+      .then(() => {})
+      .catch((e) => {
+        setGameOver(true);
+      });
+  };
+
+  const requestGameStart = () => {
+    fetch(`/api/room/start/${match.params.roomName}`, { method: "POST" });
+    // TODO: Error handling
+  };
+
   return (
     <div>
       <h1>DinoRunner</h1>
+      {gameOver ? <div>{gameOverText}</div> : null}
+      <button onClick={requestGameStart}>Start Game</button>
       <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
     </div>
   );
