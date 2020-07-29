@@ -1,6 +1,8 @@
 // Based off of https://github.com/TylerPottsDev/chrome-dino-replica
 
 import React, { useRef, useState, useEffect } from "react";
+import io from "socket.io-client";
+
 import Obstacle from "../classes/obstacle";
 import Player from "../classes/player";
 
@@ -47,8 +49,6 @@ const Runner: React.FC = () => {
       nextSpawn--;
     }
 
-    // const newObstacles = [...obstacles];
-
     obstacles.forEach((obstacle, i) => {
       if (obstacle.x + obstacle.w < 0) {
         obstacles.splice(i, 1);
@@ -68,12 +68,11 @@ const Runner: React.FC = () => {
       obstacle.update();
     });
 
-    // setObstacles(newObstacles);
-
     player.animate();
   };
 
   const spawnObstacle = () => {
+    // TODO: Make the random number a bit more fixed between 4 heights
     const size = randomNumber(40, 70);
     const addedY = randomNumber(20, 100);
     const type = randomNumber(0, 1);
@@ -122,6 +121,7 @@ const Runner: React.FC = () => {
 
   return (
     <div>
+      <h1>DinoRunner</h1>
       <canvas style={{ display: "block" }} ref={canvasRef} width={CANVAS_WIDTH} height={CANVAS_HEIGHT} />
     </div>
   );
