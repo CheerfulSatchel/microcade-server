@@ -157,6 +157,7 @@ const Runner: React.FC = () => {
 
   // const [nextSpawn, setNextSpawn] = useState(initialSpawnTimer);
 
+  const reqAnimRef = useRef<number>();
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
   const update = () => {
@@ -164,7 +165,7 @@ const Runner: React.FC = () => {
       return;
     }
 
-    requestAnimationFrame(update);
+    reqAnimRef.current = requestAnimationFrame(update);
     const context = canvasRef.current.getContext("2d");
     context.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
 
@@ -240,8 +241,13 @@ const Runner: React.FC = () => {
 
   useEffect(() => {
     if (player !== null) {
-      requestAnimationFrame(update);
+      reqAnimRef.current = requestAnimationFrame(update);
     }
+    return () => {
+      if (reqAnimRef) {
+        cancelAnimationFrame(reqAnimRef.current);
+      }
+    };
   }, [player]);
 
   return (
