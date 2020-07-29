@@ -45,7 +45,7 @@ export const StyledTetris = styled.div`
 const Tetris = ({ match }) => {
   const [socket, setSocket] = useState<SocketIOClient.Socket>(null);
   const [dropTime, setDropTime] = useState(null);
-  const [gameOver, setGameOver] = useState(false);
+  const [gameOver, setGameOver] = useState(true);
   const [gameOverText, setGameOverText] = useState("You lost!");
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
@@ -216,7 +216,7 @@ const Tetris = ({ match }) => {
                 <Display text={`Level: ${level}`} />
               </div>
             )}
-            <StartButton callback={requestGameStart} disabled={gameOver} />
+            <StartButton callback={requestGameStart} disabled={!gameOver} />
           </aside>
         </StyledTetris>
       </StyledTetrisWrapper>

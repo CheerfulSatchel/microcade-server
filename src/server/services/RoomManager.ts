@@ -2,6 +2,11 @@ import socket from "socket.io";
 import generate from "adjective-adjective-animal";
 import { Events } from "../Constants";
 
+export const enum Game {
+  Tetris = "tetris",
+  DinoRunner = "dinorunner",
+}
+
 export interface Room {
   created: Date;
   name: string;
@@ -10,6 +15,7 @@ export interface Room {
   sockets: socket.Socket[];
   activeGamePlayers: socket.Socket[];
   gameInProgress: boolean;
+  gameType: Game;
 }
 
 export interface RoomDTO {
@@ -17,11 +23,12 @@ export interface RoomDTO {
   name: string;
   users: string[];
   chatHistory: string[];
+  gameType: Game;
 }
 export class RoomManager {
   private rooms: Record<string, Room> = {};
 
-  private createRoom(roomId: string) {
+  private createRoom(roomId: string, gameType: Game) {
     const newRoom: Room = {
       created: new Date(),
       name: roomId,
@@ -30,6 +37,7 @@ export class RoomManager {
       sockets: [],
       activeGamePlayers: [],
       gameInProgress: false,
+      gameType,
     };
 
     this.rooms[roomId] = newRoom;
@@ -43,7 +51,19 @@ export class RoomManager {
       created: room.created,
       users: room.users,
       chatHistory: room.chatHistory,
+      gameType: room.gameType,
     };
+  }
+
+  private convertGameStringToEnum(gameTypeString: string) {
+    switch (gameTypeString.toLowerCase()) {
+      case "tetris":
+        return Game.Tetris;
+      case "dinorunner":
+        return Game.DinoRunner;
+      default:
+        return null;
+    }
   }
 
   public addSocketToRoom(roomId: string, newSocket: socket.Socket) {
@@ -74,14 +94,20 @@ export class RoomManager {
     }
   }
 
-  public async createNewRoom(): Promise<string> {
+  public async createNewRoom(gameTypeString: string): Promise<string> {
+    const gameType = this.convertGameStringToEnum(gameTypeString);
+
+    if (!gameType) {
+      return null;
+    }
+
     let roomId = await generate("pascal");
     // Highly unlikely. Go buy a lottery ticket if you manage to use a previously generated room name.
     while (this.rooms[roomId]) {
       roomId = await generate("pascal");
     }
 
-    this.createRoom(roomId);
+    this.createRoom(roomId, gameType);
 
     return roomId;
   }
@@ -89,6 +115,19 @@ export class RoomManager {
   public getAllRooms() {
     return Object.keys(this.rooms).reduce((acc: { [key: string]: RoomDTO }, roomKey) => {
       acc[roomKey] = this.roomToDTO(this.rooms[roomKey]);
+      return acc;
+    }, {});
+  }
+
+  public getGameRooms(gameTypeString: string) {
+    const gameType = this.convertGameStringToEnum(gameTypeString);
+    return Object.keys(this.rooms).reduce((acc: { [key: string]: RoomDTO }, roomKey) => {
+      const room = this.rooms[roomKey];
+
+      if (room.gameType === gameType) {
+        acc[roomKey] = this.roomToDTO(this.rooms[roomKey]);
+      }
+
       return acc;
     }, {});
   }

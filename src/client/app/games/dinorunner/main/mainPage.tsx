@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import io from "socket.io-client";
+
 import "../../../app.css";
 
-declare namespace TetrisMainPage {
+declare namespace RunnerMainPage {
   interface Props {
     userName: string;
   }
@@ -20,8 +20,6 @@ declare namespace TetrisMainPage {
     [key: string]: Room;
   }
 }
-
-const CreateRoomButton = styled.button``;
 
 const RoomsList = styled.div``;
 
@@ -72,16 +70,16 @@ const Container = styled.div`
 `;
 const RoomCreated = styled.p``;
 
-const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
+const TetrisMainPage: React.FC<RunnerMainPage.Props> = ({ userName }) => {
   const history = useHistory();
-  const [roomsList, setRoomsList] = useState<TetrisMainPage.IndexedRoomlist>({});
+  const [roomsList, setRoomsList] = useState<RunnerMainPage.IndexedRoomlist>({});
 
   const fetchRooms = () =>
-    fetch("/api/rooms/list/tetris")
+    fetch("/api/rooms/list/dinorunner")
       .then((res) => res.json())
       .then(({ allRooms }) => setRoomsList(allRooms));
 
-  const createRoom = () => fetch("/api/createRoom/tetris", { method: "POST" }).then(fetchRooms);
+  const createRoom = () => fetch("/api/createRoom/dinorunner", { method: "POST" }).then(fetchRooms);
 
   const openRoom = (roomName: string) => {
     history.push(`/game/${roomName}`);
@@ -100,7 +98,7 @@ const TetrisMainPage: React.FC<TetrisMainPage.Props> = ({ userName }) => {
           alt="Microcade logo"
           height="60px"
         ></img>
-        <div className="sub-heading">Welcome to Tetris {userName}</div>
+        <div className="sub-heading">Welcome to DinoRunner {userName}</div>
       </Heading>
       <Content>
         <div style={{ display: "flow-root", paddingBottom: "15px", lineHeight: "26px" }}>

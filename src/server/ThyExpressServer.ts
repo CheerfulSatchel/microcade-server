@@ -2,7 +2,7 @@ import express from "express";
 import ip from "ip";
 import path from "path";
 
-import { RoomManager, Room, RoomDTO } from "./services/RoomManager";
+import { RoomManager, Room, RoomDTO, Game } from "./services/RoomManager";
 
 const ThyExpressServer = express();
 export const roomManager: RoomManager = new RoomManager();
@@ -22,9 +22,8 @@ ThyExpressServer.get("/api", (req, res) => {
 });
 
 // creates a room
-ThyExpressServer.post("/api/createRoom", (req, res) => {
-  console.log("POST - CREATE ROOM");
-  roomManager.createNewRoom().then((roomId: string) => {
+ThyExpressServer.post("/api/createRoom/:gameType", (req, res) => {
+  roomManager.createNewRoom(req.params.gameType).then((roomId: string) => {
     res.send({ roomId });
   });
 });
@@ -32,6 +31,12 @@ ThyExpressServer.post("/api/createRoom", (req, res) => {
 // deletes a room
 ThyExpressServer.delete("/api/room/:roomId", (req, res) => {
   res.send({ room: roomManager.deleteRoom });
+});
+
+ThyExpressServer.get("/api/rooms/list/:gameType", (req, res) => {
+  const allRooms: Record<string, RoomDTO> = roomManager.getGameRooms(req.params.gameType);
+
+  res.send({ allRooms });
 });
 
 // lists all rooms
@@ -51,6 +56,7 @@ ThyExpressServer.get("/api/room/:roomId", (req, res) => {
       created: room.created,
       users: room.users,
       chatHistory: room.chatHistory,
+      gameType: room.gameType,
     };
     res.send(roomDTO);
   } else {
