@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
-import { Socket } from "socket.io";
 
 declare namespace TetrisMainPage {
   interface Props {
@@ -11,8 +10,8 @@ declare namespace TetrisMainPage {
   interface Room {
     name: string;
     created: string;
-    users: Socket[];
-    chatHistory: string[];
+    users: string[];
+    chatMessages: string[];
   }
 
   interface IndexedRoomlist {
