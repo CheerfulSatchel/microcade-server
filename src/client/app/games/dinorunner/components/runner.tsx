@@ -262,25 +262,19 @@ const Runner = ({ match }) => {
         </StyledStage>
         <aside>
           <Display text="Space to jump. Shift to duck." />
-          {gameOver ? (
-            <Display text={gameOverText} />
-          ) : (
-            <div>
-              <Display text={`Distance: ${Math.floor(score / 10)}`} />
-              <Display text={`Remaining: ${remainingPlayers}`} />
-            </div>
-          )}
+          <Display text={`Remaining: ${remainingPlayers}`} />
+          {gameOver ? <Display text={gameOverText} /> : <Display text={`Distance: ${Math.floor(score / 10)}`} />}
           <StartButton callback={requestGameStart} disabled={!gameOver} />
+          {socket && roomName && initialMessages ? (
+            <ChatComponent
+              connectedWebsocket={socket}
+              userName={userName}
+              roomName={roomName}
+              initialMessages={initialMessages}
+            />
+          ) : null}
         </aside>
       </Container>
-      {socket && roomName && initialMessages ? (
-        <ChatComponent
-          connectedWebsocket={socket}
-          userName={userName}
-          roomName={roomName}
-          initialMessages={initialMessages}
-        />
-      ) : null}
     </main>
   );
 };
