@@ -98,7 +98,7 @@ const TetrisMainPage: React.FC<RunnerMainPage.Props> = ({ userName }) => {
           alt="Microcade logo"
           height="60px"
         ></img>
-        <div className="sub-heading">Welcome to Tetris {userName}</div>
+        <div className="sub-heading">Welcome to DinoRunner {userName}</div>
       </Heading>
       <Content>
         <div style={{ display: "flow-root", paddingBottom: "15px", lineHeight: "26px" }}>
