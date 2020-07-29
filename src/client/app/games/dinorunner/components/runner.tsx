@@ -1,17 +1,15 @@
 // Based off of https://github.com/TylerPottsDev/chrome-dino-replica
 
 import React, { useRef, useState, useEffect } from "react";
+import Obstacle from "../classes/obstacle";
+import Player from "../classes/player";
 
-const CANVAS_WIDTH = window.innerWidth - 240;
-const CANVAS_HEIGHT = window.innerHeight - 80;
-const gameSpeed = 5;
-const gravity = 1;
-const initialSpawnTimer = 120;
-let nextSpawn = initialSpawnTimer;
+import { CANVAS_WIDTH, CANVAS_HEIGHT, GAME_SPEED, GRAVITY, INITIAL_SPAWN_TIMER } from "../constants";
+
+let nextSpawn = INITIAL_SPAWN_TIMER;
+let obstacles: Obstacle[] = [];
 
 const keys = {};
-
-let obstacles: Obstacle[] = [];
 
 // Event Listeners
 document.addEventListener("keydown", function (evt) {
@@ -20,133 +18,6 @@ document.addEventListener("keydown", function (evt) {
 document.addEventListener("keyup", function (evt) {
   keys[evt.code] = false;
 });
-
-interface PlayerProps {
-  ctx: CanvasRenderingContext2D;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  c: string;
-}
-
-class Player {
-  ctx: CanvasRenderingContext2D;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  c: string;
-
-  dy: number;
-  jumpForce: number;
-  originalHeight: number;
-  grounded: boolean;
-  jumpTimer: number;
-
-  constructor(props: PlayerProps) {
-    this.ctx = props.ctx;
-    this.x = props.x;
-    this.y = props.y;
-    this.w = props.w;
-    this.h = props.h;
-    this.c = props.c;
-
-    this.dy = 0;
-    this.jumpForce = 12;
-    this.jumpTimer = 0;
-    this.originalHeight = props.h;
-    this.grounded = false;
-  }
-
-  animate() {
-    if (keys["Space"] || keys["KeyW"]) {
-      this.jump();
-    } else {
-      this.jumpTimer = 0;
-    }
-
-    if (keys["ShiftLeft"] || keys["KeyS"]) {
-      this.h = this.originalHeight / 2;
-    } else {
-      this.h = this.originalHeight;
-    }
-
-    this.y += this.dy;
-
-    if (this.y + this.h < CANVAS_HEIGHT) {
-      this.dy += gravity;
-      this.grounded = false;
-    } else {
-      this.dy = 0;
-      this.grounded = true;
-      this.y = CANVAS_HEIGHT - this.h;
-    }
-
-    this.draw();
-  }
-
-  jump() {
-    if (this.grounded && this.jumpTimer === 0) {
-      this.jumpTimer = 1;
-      this.dy = -this.jumpForce;
-    } else if (this.jumpTimer > 0 && this.jumpTimer < 15) {
-      this.jumpTimer++;
-      this.dy = -this.jumpForce - this.jumpTimer / 50;
-    }
-  }
-
-  draw() {
-    this.ctx.beginPath();
-    this.ctx.fillStyle = this.c;
-    this.ctx.fillRect(this.x, this.y, this.w, this.h);
-    this.ctx.closePath();
-  }
-}
-
-interface ObstacleProps {
-  ctx: CanvasRenderingContext2D;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  c: string;
-}
-
-class Obstacle {
-  ctx: CanvasRenderingContext2D;
-  x: number;
-  y: number;
-  w: number;
-  h: number;
-  c: string;
-  dx: number;
-
-  constructor(props: ObstacleProps) {
-    const { ctx, x, y, w, h, c } = props;
-    this.ctx = ctx;
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.c = c;
-
-    this.dx = -gameSpeed;
-  }
-
-  update() {
-    this.x += this.dx;
-    this.draw();
-    this.dx = -gameSpeed;
-  }
-
-  draw() {
-    this.ctx.beginPath();
-    this.ctx.fillStyle = this.c;
-    this.ctx.fillRect(this.x, this.y, this.w, this.h);
-    this.ctx.closePath();
-  }
-}
 
 const Runner: React.FC = () => {
   const [x, setX] = useState(0);
@@ -191,8 +62,7 @@ const Runner: React.FC = () => {
       ) {
         obstacles = [];
         setScore(0);
-        // setNextSpawn(initialSpawnTimer);
-        nextSpawn = initialSpawnTimer;
+        nextSpawn = INITIAL_SPAWN_TIMER;
       }
 
       obstacle.update();
@@ -225,10 +95,10 @@ const Runner: React.FC = () => {
   };
 
   useEffect(() => {
-    console.log("Canvas effect");
     if (canvasRef !== null) {
       const newPlayer = new Player({
         ctx: canvasRef.current.getContext("2d"),
+        keys,
         x: 25,
         y: 0,
         w: 50,
