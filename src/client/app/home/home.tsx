@@ -29,7 +29,9 @@ class Home extends React.Component {
             <img className="card" src={require("../../../resources/images/uno.png")} alt="Uno image"></img>
           </div>
           <div className="child">
-            <img className="card" src={require("../../../resources/images/dinorun.png")} alt="Dino Run image"></img>
+            <Link to="/dinorunner">
+              <img className="card" src={require("../../../resources/images/dinorun.png")} alt="Dino Run image"></img>
+            </Link>
           </div>
         </div>
       </main>
