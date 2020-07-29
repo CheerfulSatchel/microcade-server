@@ -1,7 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 
-import Cell from "./Cell";
+import Cell from "./cell";
 
 export const StyledStage = styled.div<{ width?: number; height?: number }>`
   display: grid;

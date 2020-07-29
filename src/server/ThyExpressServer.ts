@@ -1,13 +1,10 @@
 import express from "express";
-import ip from "ip";
 import path from "path";
 
-import { RoomManager, Room, RoomDTO, Game } from "./services/RoomManager";
+import { RoomManager, RoomDTO } from "./services/RoomManager";
 
 const ThyExpressServer = express();
 export const roomManager: RoomManager = new RoomManager();
-
-const port: number = 3001;
 
 ThyExpressServer.use(express.static(path.join(__dirname, "../client")));
 ThyExpressServer.use(express.json());

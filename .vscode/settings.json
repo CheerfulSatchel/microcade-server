@@ -1,0 +1,8 @@
+{
+  "appService.zipIgnorePattern": [
+    "node_modules{,/**}",
+    ".vscode{,/**}"
+  ],
+  "appService.defaultWebAppToDeploy": "/subscriptions/a2035197-a974-4faa-b1ab-5a3b59b2e938/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/microcade",
+  "appService.deploySubpath": "."
+}

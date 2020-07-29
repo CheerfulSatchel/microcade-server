@@ -1,7 +1,7 @@
 import server from "./ThyWebSocketServer";
 
-const port: number = 3001;
+const port: number | string = process.env.PORT || 3001;
 
-server.listen(port, "127.0.0.1", () => {
+server.listen(port, () => {
   return console.log(`server is listening on ${port}`);
 });
